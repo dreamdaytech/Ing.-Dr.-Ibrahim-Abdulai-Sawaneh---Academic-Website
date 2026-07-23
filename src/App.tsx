@@ -27,6 +27,7 @@ import BlogSection from './components/BlogSection';
 import CMSDashboard from './components/CMSDashboard';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -520,6 +521,7 @@ export default function App() {
 
       {/* Master footer */}
       <Footer setActiveTab={setActiveTab} />
+      <ScrollToTop />
     </div>
   );
 }

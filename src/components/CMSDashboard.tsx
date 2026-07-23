@@ -397,14 +397,6 @@ export default function CMSDashboard({
     }
   };
 
-  // File repository simulation
-  const digitalFiles = [
-    { name: "cv_dr_sawaneh_full_dossier.pdf", size: "2.4 MB", type: "PDF / Curriculum", downloads: 1420 },
-    { name: "disaster_policy_reduction_mediation_2025.pdf", size: "4.8 MB", type: "PDF / pre-print", downloads: 820 },
-    { name: "role_of_cyber_security_postwar_sample.pdf", size: "1.6 MB", type: "PDF / book excerpt", downloads: 1250 },
-    { name: "student_dissertation_dbms_unimtech_case.pdf", size: "3.2 MB", type: "PDF / pre-print", downloads: 640 }
-  ];
-
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let cleanEmail = email.trim().toLowerCase();
@@ -1057,9 +1049,10 @@ export default function CMSDashboard({
           { id: 'cv', name: 'CV Timeline', count: timelineItems.length, icon: <Briefcase className="h-4 w-4" /> },
           { id: 'talks', name: 'Speaking / Media', count: talkEvents.length, icon: <Presentation className="h-4 w-4" /> },
           { id: 'gallery', name: 'Visual Gallery', count: galleryImages.length, icon: <ImageIcon className="h-4 w-4" /> },
-          { id: 'galleryCategories', name: 'Gallery Categories', count: galleryCategories.length, icon: <Layers className="h-4 w-4" /> },
           { id: 'profile', name: 'Admin Profile', count: 2, icon: <User className="h-4 w-4" /> }
-        ].map((model) => (
+        ].map((model) => {
+          const isActive = activeModel === model.id || (model.id === 'gallery' && activeModel === 'galleryCategories');
+          return (
           <button
             key={model.id}
             onClick={() => {
@@ -1070,13 +1063,13 @@ export default function CMSDashboard({
               }
             }}
             className={`p-4 border transition-all text-left flex flex-col justify-between h-24 cursor-pointer rounded-none relative ${
-              activeModel === model.id
+              isActive
                 ? 'bg-[#FBFBF9] border-editorial-navy shadow-xs ring-1 ring-editorial-navy/20'
                 : 'bg-white border-editorial-border hover:border-editorial-gold'
             }`}
           >
             <div className="flex items-center justify-between w-full">
-              <span className={`p-1.5 ${activeModel === model.id ? 'bg-editorial-navy text-editorial-gold' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`p-1.5 ${isActive ? 'bg-editorial-navy text-editorial-gold' : 'bg-slate-100 text-slate-500'}`}>
                 {model.icon}
               </span>
               <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5">
@@ -1086,11 +1079,11 @@ export default function CMSDashboard({
             <div className="font-serif text-xs font-bold text-editorial-navy uppercase tracking-wide truncate w-full mt-2">
               {model.name}
             </div>
-            {activeModel === model.id && (
+            {isActive && (
               <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#C5A059]" />
             )}
           </button>
-        ))}
+        )})}
       </div>
 
       {/* Grid: Schema Modeling & Dynamic Publish Engine */}
@@ -1112,6 +1105,31 @@ export default function CMSDashboard({
                 </button>
               )}
             </div>
+            
+            {(activeModel === 'gallery' || activeModel === 'galleryCategories') && (
+              <div className="flex gap-4 mb-6 border-b border-slate-200">
+                <button
+                  onClick={() => setActiveModel('gallery')}
+                  className={`pb-2 text-[10px] font-mono uppercase tracking-widest font-bold border-b-2 transition-colors ${
+                    activeModel === 'gallery'
+                      ? 'border-editorial-navy text-editorial-navy'
+                      : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  Gallery Images
+                </button>
+                <button
+                  onClick={() => setActiveModel('galleryCategories')}
+                  className={`pb-2 text-[10px] font-mono uppercase tracking-widest font-bold border-b-2 transition-colors ${
+                    activeModel === 'galleryCategories'
+                      ? 'border-editorial-navy text-editorial-navy'
+                      : 'border-transparent text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  Categories
+                </button>
+              </div>
+            )}
 
             {/* List Stream */}
             <div className="space-y-3.5 max-h-[550px] overflow-y-auto pr-2 divide-y divide-slate-100">
@@ -1184,33 +1202,6 @@ export default function CMSDashboard({
                   No records stored in this collection. Click "+ Add New Record" to enter one.
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Pre-print Asset Safe */}
-          <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy border-b border-editorial-border-light pb-3 mb-4 flex items-center gap-2">
-              <HardDrive className="h-4 w-4 text-editorial-gold" />
-              Pre-Print Documents Safe & Assets
-            </h3>
-            <div className="divide-y divide-editorial-border-light">
-              {digitalFiles.map((file, idx) => (
-                <div key={idx} className="py-3 flex items-center justify-between text-xs">
-                  <div className="flex items-start gap-2.5">
-                    <div className="p-2 bg-[#F1F4F8] text-editorial-navy shrink-0 mt-0.5 rounded-none">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <span className="block font-semibold text-slate-800 font-mono leading-tight">{file.name}</span>
-                      <span className="text-[10px] text-slate-400 mt-1 block leading-none">{file.type} • size: {file.size}</span>
-                    </div>
-                  </div>
-                  <div className="text-right font-mono text-[9px] text-slate-400 uppercase tracking-wide font-bold">
-                    <span className="block text-slate-700">{file.downloads} DLs</span>
-                    <span className="text-[#C5A059]">MD5: validated</span>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 
