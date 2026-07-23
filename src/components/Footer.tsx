@@ -1,4 +1,5 @@
 import React from 'react';
+import logoImg from '../assets/logo.png';
 import { GraduationCap, Mail, Phone, MapPin, ExternalLink, ShieldCheck } from 'lucide-react';
 import { HERO_INFO } from '../data/academicData';
 
@@ -20,7 +21,7 @@ export default function Footer({ setActiveTab }: FooterProps) {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2">
               <div className="h-9 w-9 bg-white text-editorial-navy rounded-none flex items-center justify-center shrink-0">
-                <img src="/logo.png" alt="IAS Logo" className="h-full w-full object-contain" />
+                <img src={logoImg} alt="IAS Logo" className="h-full w-full object-contain" />
               </div>
               <span className="font-serif text-base font-bold text-white tracking-tight">
                 Ing. Dr. Ibrahim A. Sawaneh

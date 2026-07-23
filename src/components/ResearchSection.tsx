@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, BookOpen, Quote, Download, FileText, ExternalLink, Calendar, Users, Hash, Check, Send, X, ZoomIn, ZoomOut, Printer } from 'lucide-react';
+import { Search, Filter, BookOpen, Quote, Download, FileText, ExternalLink, Calendar, Users, Hash, Check, Send, X, ZoomIn, ZoomOut, Printer, Twitter, Linkedin, Facebook, Share2, MessageCircle } from 'lucide-react';
 import { PUBLICATIONS } from '../data/academicData';
 import { Publication } from '../types';
 import ResearchImpactChart from './ResearchImpactChart';
@@ -30,6 +30,53 @@ export default function ResearchSection({
   const [previewMode, setPreviewMode] = useState<'preprint' | 'metadata'>('preprint');
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [printSuccess, setPrintSuccess] = useState<boolean>(false);
+
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
+
+  const exportPublicationsToPDF = async () => {
+    setIsExportingPDF(true);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      const htmlContent = `
+        <div style="font-family: Arial, sans-serif; color: #1e293b; max-width: 800px; margin: 0 auto; padding: 20px;">
+          <h1 style="font-family: Georgia, serif; font-size: 24px; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 30px;">
+            Publications - Dr. Ibrahim A. Sawaneh
+          </h1>
+          
+          ${filteredPubs.map(pub => `
+            <div style="margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid #f1f5f9; page-break-inside: avoid;">
+              <h2 style="font-size: 16px; font-weight: bold; margin: 0 0 8px 0; color: #0f172a;">${pub.title}</h2>
+              <p style="font-size: 14px; margin: 0 0 4px 0; color: #334155;"><strong>Authors:</strong> ${pub.authors}</p>
+              <p style="font-size: 12px; margin: 0 0 8px 0; color: #64748b;">
+                ${pub.journal ? `<strong>Journal:</strong> ${pub.journal} | ` : ''}
+                <strong>Year:</strong> ${pub.year}
+                ${pub.doi ? ` | <strong>DOI:</strong> ${pub.doi}` : ''}
+              </p>
+              <p style="font-size: 13px; line-height: 1.6; color: #475569; margin: 0;">${pub.abstract}</p>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+
+      const opt = {
+        margin:       0.5,
+        filename:     'research_publications_dr_sawaneh.pdf',
+        image:        { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' as const }
+      };
+      
+      await html2pdf().set(opt).from(tempDiv).save();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
 
   React.useEffect(() => {
     if (selectedPubId) {
@@ -498,6 +545,26 @@ Status: Active index</div>
             )}
           </div>
 
+          {/* Export Publications as PDF */}
+          <div className="border border-editorial-border bg-white p-5 text-center shadow-xs">
+            <h4 className="font-serif text-sm font-semibold text-editorial-navy uppercase tracking-wide">Export Publications</h4>
+            <p className="text-[10px] text-slate-500 mt-2 leading-relaxed font-sans px-2">
+              Download a formatted PDF dossier of all currently filtered research publications and proceedings.
+            </p>
+            <button
+              onClick={exportPublicationsToPDF}
+              disabled={isExportingPDF}
+              className={`mt-4 w-full py-2.5 flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest font-bold transition-colors cursor-pointer border ${
+                isExportingPDF 
+                  ? 'bg-slate-100 text-slate-400 border-slate-200' 
+                  : 'bg-editorial-gold text-editorial-navy border-editorial-gold hover:bg-editorial-gold/90'
+              }`}
+            >
+              <Download className="h-3 w-3" />
+              {isExportingPDF ? 'Generating...' : 'Download PDF List'}
+            </button>
+          </div>
+
           {/* Academic Profile Export */}
           <div className="border border-editorial-border bg-editorial-navy p-5 text-white shadow-xs text-center">
             <h4 className="font-serif text-sm font-semibold text-editorial-gold uppercase tracking-wide">Need the full CV file?</h4>
@@ -540,7 +607,7 @@ Status: Active index</div>
 
           {/* Publications List */}
           {filteredPubs.length > 0 ? (
-            <div className="space-y-4">
+            <div id="publications-list-container" className="space-y-4">
               {filteredPubs.map((pub) => (
                 <div 
                   key={pub.id}
@@ -645,17 +712,37 @@ Status: Active index</div>
                       </button>
                     </div>
 
-                    {pub.link && (
-                      <a
-                        href={pub.link}
-                        target="_blank"
-                        referrerPolicy="no-referrer"
-                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-editorial-gold hover:text-editorial-navy transition-colors"
-                      >
-                        Source Journal
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 pr-4 border-r border-editorial-border-light">
+                        <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Publication link copied!"); }} className="text-slate-400 hover:text-editorial-navy transition-colors cursor-pointer" aria-label="Copy link">
+                          <Share2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(pub.title)}`, '_blank')} className="text-slate-400 hover:text-[#1DA1F2] transition-colors cursor-pointer" aria-label="Share on X (Twitter)">
+                          <Twitter className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')} className="text-slate-400 hover:text-[#0A66C2] transition-colors cursor-pointer" aria-label="Share on LinkedIn">
+                          <Linkedin className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')} className="text-slate-400 hover:text-[#1877F2] transition-colors cursor-pointer" aria-label="Share on Facebook">
+                          <Facebook className="h-3.5 w-3.5" />
+                        </button>
+                        <button onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(pub.title + ' ' + window.location.href)}`, '_blank')} className="text-slate-400 hover:text-[#25D366] transition-colors cursor-pointer" aria-label="Share on WhatsApp">
+                          <MessageCircle className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+
+                      {pub.link && (
+                        <a
+                          href={pub.link}
+                          target="_blank"
+                          referrerPolicy="no-referrer"
+                          className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-editorial-gold hover:text-editorial-navy transition-colors"
+                        >
+                          Source Journal
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

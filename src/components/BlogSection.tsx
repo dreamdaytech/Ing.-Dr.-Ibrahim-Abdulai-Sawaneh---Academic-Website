@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, Calendar, Clock, Search, ArrowLeft, Send, CheckCircle2, Heart, Share2, Compass, ArrowRight } from 'lucide-react';
+import { BookOpen, Calendar, Clock, Search, ArrowLeft, Send, CheckCircle2, Heart, Share2, Compass, ArrowRight, Twitter, Linkedin, Facebook, MessageCircle } from 'lucide-react';
 import { BLOG_POSTS } from '../data/academicData';
 import { BlogPost } from '../types';
 
@@ -160,6 +160,19 @@ export default function BlogSection({
               <button onClick={() => { navigator.clipboard.writeText(window.location.href); alert("Article URL copied!"); }} className="inline-flex items-center gap-1 hover:text-editorial-navy cursor-pointer">
                 <Share2 className="h-3.5 w-3.5" />
                 <span>Copy URL</span>
+              </button>
+              <span className="text-slate-200 mx-1">|</span>
+              <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(activePost.title)}`, '_blank')} className="inline-flex items-center gap-1 hover:text-[#1DA1F2] cursor-pointer" aria-label="Share on X (Twitter)">
+                <Twitter className="h-3.5 w-3.5" />
+              </button>
+              <button onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')} className="inline-flex items-center gap-1 hover:text-[#0A66C2] cursor-pointer" aria-label="Share on LinkedIn">
+                <Linkedin className="h-3.5 w-3.5" />
+              </button>
+              <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')} className="inline-flex items-center gap-1 hover:text-[#1877F2] cursor-pointer" aria-label="Share on Facebook">
+                <Facebook className="h-3.5 w-3.5" />
+              </button>
+              <button onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(activePost.title + ' ' + window.location.href)}`, '_blank')} className="inline-flex items-center gap-1 hover:text-[#25D366] cursor-pointer" aria-label="Share on WhatsApp">
+                <MessageCircle className="h-3.5 w-3.5" />
               </button>
             </div>
             <span>Open-Access Creative Commons</span>

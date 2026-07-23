@@ -1467,6 +1467,16 @@ export default function CMSDashboard({
                     </div>
 
                     <div>
+                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Source Journal Link (Optional)</label>
+                      <input
+                        type="url"
+                        placeholder="e.g. https://ieeexplore.ieee.org/document/..."
+                        value={link}
+                        onChange={(e) => setLink(e.target.value)}
+                        className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"
+                      />
+                    </div>
+                    <div>
                       <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Keywords (Comma separated)</label>
                       <input
                         type="text"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '../assets/logo.png';
 import { Menu, X, ChevronDown, Search, BookOpen, FileText } from 'lucide-react';
 import { Publication, BlogPost } from '../types';
 
@@ -111,7 +112,7 @@ export default function Navbar({
           {/* Logo / Scholar Name */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center shrink-0">
-              <img src="/logo.png" alt="IAS Logo" className="h-full w-full object-contain" />
+              <img src={logoImg} alt="IAS Logo" className="h-full w-full object-contain" />
             </div>
             <div>
               <span 

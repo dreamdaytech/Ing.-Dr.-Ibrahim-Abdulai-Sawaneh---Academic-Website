@@ -1,0 +1,21 @@
+                        <FileText className="h-3 w-3" />
+                        Request Copy
+                      </button>
+                    </div>
+
+                    {pub.link && (
+                      <a
+                        href={pub.link}
+                        target="_blank"
+                        referrerPolicy="no-referrer"
+                        className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-editorial-gold hover:text-editorial-navy transition-colors"
+                      >
+                        Source Journal
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (

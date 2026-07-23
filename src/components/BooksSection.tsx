@@ -12,12 +12,109 @@ export default function BooksSection({ books = BOOKS }: BooksSectionProps) {
   const [selectedBookState, setSelectedBookState] = useState<Book | null>(null);
   const activeBookSelected = selectedBookState || books[0] || null;
   const [copiedIsbn, setCopiedIsbn] = useState<string | null>(null);
+  const [isExportingExcerpt, setIsExportingExcerpt] = useState(false);
 
   const handleCopyIsbn = (isbn: string) => {
     navigator.clipboard.writeText(isbn);
     setCopiedIsbn(isbn);
     setTimeout(() => setCopiedIsbn(null), 2000);
   };
+
+  const exportExcerptToPDF = async () => {
+    if (!activeBookSelected) return;
+    
+    setIsExportingExcerpt(true);
+    try {
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      const htmlContent = `
+        <div style="padding: 20px; font-family: 'Times New Roman', Times, serif; color: #000; max-width: 800px; margin: 0 auto; background: #fff;">
+          <style>
+            p { margin-bottom: 15px; }
+            ul, ol { margin-bottom: 15px; padding-left: 20px; }
+            li { margin-bottom: 5px; page-break-inside: avoid; }
+            p { margin-bottom: 15px; page-break-inside: avoid; }
+            h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
+            h1, h2, h3, h4, h5, h6 { margin-top: 20px; margin-bottom: 10px; color: #0f172a; }
+            strong, b { font-weight: bold; }
+            em, i { font-style: italic; }
+          </style>
+          <h1 style="font-size: 24pt; font-weight: bold; text-align: center; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 10px;">
+            ${activeBookSelected.title}
+          </h1>
+          <h2 style="font-size: 16pt; font-weight: normal; text-align: center; color: #475569; margin-bottom: 30px;">
+            Full Index & Synopsis
+          </h2>
+          
+          <div style="margin-bottom: 30px; font-size: 12pt; color: #333; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 20px;">
+            <p style="margin: 5px 0;"><strong>Author:</strong> Dr. Ibrahim A. Sawaneh</p>
+            <p style="margin: 5px 0;"><strong>Publisher:</strong> ${activeBookSelected.publisher}</p>
+            <p style="margin: 5px 0;"><strong>ISBN:</strong> ${activeBookSelected.isbn}</p>
+          </div>
+          
+          <h3 style="font-size: 16pt; font-weight: bold; color: #0f172a; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+            Synopsis / Overview
+          </h3>
+          <div style="font-size: 12pt; line-height: 1.8; color: #111; margin-bottom: 40px; text-align: justify;">
+            ${activeBookSelected.synopsis}
+          </div>
+
+          <h3 style="font-size: 16pt; font-weight: bold; color: #0f172a; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+            Why This Study Matters
+          </h3>
+          <div style="font-size: 12pt; line-height: 1.8; color: #111; margin-bottom: 40px; text-align: justify; font-style: italic; background-color: #fbfbf9; padding: 15px; border-left: 4px solid #b89b5e;">
+            ${activeBookSelected.whyItMatters}
+          </div>
+
+          <h3 style="font-size: 16pt; font-weight: bold; color: #0f172a; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+            Table of Contents (Full Index)
+          </h3>
+          <ul style="font-size: 12pt; line-height: 1.8; color: #111; margin-bottom: 40px; padding-left: 20px;">
+            ${activeBookSelected.tableOfContents.map(chapter => `<li style="margin-bottom: 10px;">${chapter}</li>`).join('')}
+          </ul>
+          
+          ${activeBookSelected.reviews && activeBookSelected.reviews.length > 0 ? `
+            <h3 style="font-size: 16pt; font-weight: bold; color: #0f172a; margin-top: 30px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+              Scholarly Endorsements & Reviews
+            </h3>
+            <div style="margin-bottom: 40px;">
+              ${activeBookSelected.reviews.map(review => `
+                <blockquote style="margin: 0 0 20px 0; padding: 15px 20px; background-color: #f8fafc; border-left: 4px solid #94a3b8;">
+                  <p style="font-size: 12pt; font-style: italic; color: #334155; margin-bottom: 10px;">"${review.text}"</p>
+                  <footer style="font-size: 10pt; color: #64748b; font-family: monospace; text-transform: uppercase;">
+                    <strong>${review.author}</strong>, ${review.role}
+                  </footer>
+                </blockquote>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <div style="margin-top: 50px; padding: 20px; font-size: 10pt; line-height: 1.5; color: #555; border-top: 1px solid #ccc; text-align: center;">
+            <em>Note: This is an automatically generated document for preview purposes.<br/>For the full volume, please consult academic retailers or institutional libraries.</em>
+          </div>
+        </div>
+      `;
+
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+
+      const opt = {
+        margin:       0.75,
+        filename:     `excerpt_${activeBookSelected.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+        image:        { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' as const },
+        pagebreak:    { mode: ['css', 'legacy'] }
+      };
+      
+      await html2pdf().set(opt).from(tempDiv).save();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    } finally {
+      setIsExportingExcerpt(false);
+    }
+  };
+
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -138,14 +235,18 @@ export default function BooksSection({ books = BOOKS }: BooksSectionProps) {
                     <ExternalLink className="h-3.5 w-3.5 text-editorial-gold" />
                   </a>
                 )}
-                <a
-                  href="#"
-                  onClick={(e) => { e.preventDefault(); alert("PDF Excerpt dispatched directly via administrative state."); }}
-                  className="w-full py-3 bg-[#FBFBF9] hover:bg-slate-100 border border-editorial-border text-slate-700 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                <button
+                  onClick={exportExcerptToPDF}
+                  disabled={isExportingExcerpt}
+                  className={`w-full py-3 border text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    isExportingExcerpt
+                      ? 'bg-slate-100 text-slate-400 border-slate-200'
+                      : 'bg-[#FBFBF9] hover:bg-slate-100 border-editorial-border text-slate-700'
+                  }`}
                 >
                   <Download className="h-3.5 w-3.5 text-slate-500" />
-                  Download Excerpt Chapter
-                </a>
+                  {isExportingExcerpt ? 'Generating PDF...' : 'Download Full Index & Synopsis'}
+                </button>
               </div>
             </div>
 

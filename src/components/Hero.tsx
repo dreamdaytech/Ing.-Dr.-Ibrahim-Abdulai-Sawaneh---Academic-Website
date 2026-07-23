@@ -1,4 +1,5 @@
 import React from 'react';
+import heroImg from '../assets/hero.jpg';
 import { motion } from 'motion/react';
 import { FileText, BookOpen, Mail, ArrowRight, ShieldCheck, Award, Users, BookMarked } from 'lucide-react';
 import { HERO_INFO, RESEARCH_STATISTICS } from '../data/academicData';
@@ -120,7 +121,7 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
               <div className="border border-editorial-border bg-white p-6 shadow-xs">
                 {/* Profile Image */}
                 <div className="flex h-80 w-full items-center justify-center bg-slate-50 relative overflow-hidden border-r-4 border-editorial-gold">
-                  <img src="/hero.jpg" alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
+                  <img src={heroImg} alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Meta details */}
