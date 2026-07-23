@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-editorial-navy: #1B365D;
+  --color-editorial-gold: #C5A059;
+  --color-editorial-cream: #FBFBF9;
+  --color-editorial-ink: #1A1A1A;
+  --color-editorial-border: #E5E5E1;
+  --color-editorial-border-light: #F0F0EE;
+}
+
+/* Custom scrollbar and ambient visual adjustments for academic style */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply text-editorial-ink bg-editorial-cream font-sans antialiased selection:bg-editorial-navy/10 selection:text-editorial-navy;
+  }
+
+  /* Academic print styles for printable CV component */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+    body {
+      background: white !important;
+      color: black !important;
+    }
+  }
+}
+
+/* High-Contrast Dark Mode suitable for academic reading */
+html.dark {
+  /* Override variables */
+  --color-editorial-cream: #0B0C10; /* Rich warm dark charcoal background */
+  --color-editorial-ink: #ECEBE6; /* Eye-safe off-white text for academic reading */
+  --color-editorial-navy: #9BB7D4; /* Soft legibility blue for links and headers */
+  --color-editorial-border: #2A2B2D; /* Deep slate border */
+  --color-editorial-border-light: #1E1F21; /* Soft nested boundaries */
+  --color-editorial-gold: #D6B26A; /* High contrast warm gold accent */
+
+  /* For Recharts dynamic color schema */
+  --chart-grid: #242526;
+  --chart-tick: #8E9196;
+  --chart-bar: #9BB7D4;
+}
+
+/* Base Body Dark Mode Overrides */
+html.dark body {
+  background-color: #0B0C10 !important;
+  color: #ECEBE6 !important;
+}
+
+/* Background Utility Overrides for Dark Mode */
+html.dark .bg-white {
+  background-color: #121316 !important;
+}
+
+html.dark .bg-slate-50 {
+  background-color: #16171B !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #1F2025 !important;
+}
+
+html.dark .bg-slate-200 {
+  background-color: #2F3137 !important;
+}
+
+html.dark .bg-editorial-cream {
+  background-color: #0B0C10 !important;
+}
+
+html.dark .bg-\[\#FBFBF9\] {
+  background-color: #121316 !important;
+}
+
+html.dark .bg-\[\#F1F4F8\] {
+  background-color: #1F232D !important;
+}
+
+html.dark .bg-\[\#FDFDFB\] {
+  background-color: #0B0C10 !important;
+}
+
+/* Background opacity variants for dark mode header/nav backdrop */
+html.dark .bg-white\/95 {
+  background-color: rgba(18, 19, 22, 0.95) !important;
+}
+
+/* Text Overrides for Dark Mode */
+html.dark .text-slate-900,
+html.dark .text-slate-800,
+html.dark .text-slate-700,
+html.dark .text-editorial-navy {
+  color: #ECEBE6 !important;
+}
+
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #ACACB0 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #7E7F82 !important;
+}
+
+html.dark .text-slate-300 {
+  color: #C1C2C5 !important;
+}
+
+html.dark .prose,
+html.dark .prose-slate {
+  --tw-prose-body: #ECEBE6 !important;
+  --tw-prose-headings: #ECEBE6 !important;
+  --tw-prose-links: #D6B26A !important;
+  --tw-prose-bold: #ECEBE6 !important;
+  --tw-prose-counters: #ACACB0 !important;
+  --tw-prose-bullets: #D6B26A !important;
+  color: #ECEBE6 !important;
+}
+
+/* Borders Overrides for Dark Mode */
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-editorial-border,
+html.dark .border-editorial-border-light {
+  border-color: #2A2B2D !important;
+}
+
+/* Hover & Focus states overrides */
+html.dark .hover\:bg-slate-50:hover {
+  background-color: #1D1E22 !important;
+}
+
+html.dark .hover\:text-editorial-navy:hover {
+  color: #9BB7D4 !important;
+}
+
+/* Special buttons and elements */
+html.dark .bg-editorial-navy {
+  background-color: #1A2E4C !important; /* Deeper high-contrast blue */
+  color: #ECEBE6 !important;
+}
+
+html.dark .border-editorial-navy {
+  border-color: #9BB7D4 !important;
+}
+
+/* Ensure form controls are highly visible in dark mode */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #121316 !important;
+  color: #ECEBE6 !important;
+  border-color: #2A2B2D !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #D6B26A !important;
+}
