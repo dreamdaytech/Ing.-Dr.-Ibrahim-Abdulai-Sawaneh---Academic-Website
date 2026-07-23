@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
 import { CMS_MODELS_INFO, PUBLICATIONS, BOOKS, BLOG_POSTS, TALK_EVENTS, TIMELINE_EXPERIENCE, HERO_INFO, BIOGRAPHY_DETAILS } from '../data/academicData';
-import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage } from '../types';
+import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage, GalleryCategory } from '../types';
 import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile } from '../lib/firebase';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
@@ -26,6 +26,8 @@ interface CMSDashboardProps {
   setBiographyDetails: React.Dispatch<React.SetStateAction<any>>;
   galleryImages: GalleryImage[];
   setGalleryImages: React.Dispatch<React.SetStateAction<GalleryImage[]>>;
+  galleryCategories: GalleryCategory[];
+  setGalleryCategories: React.Dispatch<React.SetStateAction<GalleryCategory[]>>;
 }
 
 const quillModules = {
@@ -56,7 +58,9 @@ export default function CMSDashboard({
   biographyDetails,
   setBiographyDetails,
   galleryImages,
-  setGalleryImages
+  setGalleryImages,
+  galleryCategories,
+  setGalleryCategories
 }: CMSDashboardProps) {
   // Authentication state persisted in sessionStorage and synced with Firebase Auth
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -88,7 +92,7 @@ export default function CMSDashboard({
   }, []);
 
   // Selected category model to manage
-  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery'>('publications');
+  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery' | 'galleryCategories'>('publications');
 
   // Currently editing item ID (null if adding new)
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -505,6 +509,8 @@ export default function CMSDashboard({
       setImageCategory(item.category || '');
       setImageOrder(item.order?.toString() || '0');
       setLocalPreviewUrl('');
+    } else if (activeModel === 'galleryCategories') {
+      setTitle(item.name || '');
     }
   };
 
@@ -528,6 +534,9 @@ export default function CMSDashboard({
       } else if (activeModel === 'gallery') {
         await deleteDocument('galleryImages', id);
         setGalleryImages(galleryImages.filter(g => g.id !== id));
+      } else if (activeModel === 'galleryCategories') {
+        await deleteDocument('galleryCategories', id);
+        setGalleryCategories(galleryCategories.filter(c => c.id !== id));
       }
       setDeleteConfirmId(null);
     } catch (error) {
@@ -773,6 +782,19 @@ export default function CMSDashboard({
         }
       }
 
+      else if (activeModel === 'galleryCategories') {
+        const newCat: GalleryCategory = {
+          id: editingId || `cat-dynamic-${Date.now()}`,
+          name: title
+        };
+        await saveDocument('galleryCategories', newCat.id, newCat);
+        if (editingId) {
+          setGalleryCategories(galleryCategories.map(c => c.id === editingId ? newCat : c));
+        } else {
+          setGalleryCategories([...galleryCategories, newCat]);
+        }
+      }
+
       else if (activeModel === 'profile') {
         if (editingId === 'hero') {
           const updatedHero = {
@@ -823,6 +845,7 @@ export default function CMSDashboard({
       case 'cv': return timelineItems;
       case 'talks': return talkEvents;
       case 'gallery': return galleryImages.map(gi => ({ ...gi, title: gi.caption }));
+      case 'galleryCategories': return galleryCategories.map(c => ({ ...c, title: c.name }));
       case 'profile': return [
         { id: 'hero', title: 'Scholarly Hero Section Details', isProfile: true },
         { id: 'biography', title: 'Scholarly Biography & Vision', isProfile: true }
@@ -1034,6 +1057,7 @@ export default function CMSDashboard({
           { id: 'cv', name: 'CV Timeline', count: timelineItems.length, icon: <Briefcase className="h-4 w-4" /> },
           { id: 'talks', name: 'Speaking / Media', count: talkEvents.length, icon: <Presentation className="h-4 w-4" /> },
           { id: 'gallery', name: 'Visual Gallery', count: galleryImages.length, icon: <ImageIcon className="h-4 w-4" /> },
+          { id: 'galleryCategories', name: 'Gallery Categories', count: galleryCategories.length, icon: <Layers className="h-4 w-4" /> },
           { id: 'profile', name: 'Admin Profile', count: 2, icon: <User className="h-4 w-4" /> }
         ].map((model) => (
           <button
@@ -1105,6 +1129,7 @@ export default function CMSDashboard({
                         {activeModel === 'cv' && `${item.subtitle} • ${item.institution} | Year: ${item.year}`}
                         {activeModel === 'talks' && `${item.eventName} | Date: ${item.date}`}
                         {activeModel === 'gallery' && `Category: ${item.category} | Order: ${item.order}`}
+                        {activeModel === 'galleryCategories' && `ID: ${item.id}`}
                         {activeModel === 'profile' && `Dynamic Administrative Content`}
                       </p>
                       {item.id === editingId && (
@@ -1945,13 +1970,9 @@ export default function CMSDashboard({
                           className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none text-sm"
                         >
                           <option value="">Select a category</option>
-                          <option value="Conferences">Conferences</option>
-                          <option value="Teaching">Teaching</option>
-                          <option value="Research">Research</option>
-                          <option value="Awards">Awards</option>
-                          <option value="Fieldwork">Fieldwork</option>
-                          <option value="Networking">Networking</option>
-                          <option value="Other">Other</option>
+                          {galleryCategories.map(cat => (
+                            <option key={cat.id} value={cat.name}>{cat.name}</option>
+                          ))}
                         </select>
                       </div>
                       <div>
@@ -1961,6 +1982,23 @@ export default function CMSDashboard({
                           placeholder="0"
                           value={imageOrder}
                           onChange={(e) => setImageOrder(e.target.value)}
+                          className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none text-sm"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {activeModel === 'galleryCategories' && (
+                  <>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Category Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
                           className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none text-sm"
                         />
                       </div>

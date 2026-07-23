@@ -1,4 +1,4 @@
-import { Publication, Book, BlogPost, TalkEvent, TimelineItem, ResearchArea, GalleryImage } from '../types';
+import { Publication, Book, BlogPost, TalkEvent, TimelineItem, ResearchArea, GalleryImage, GalleryCategory } from '../types';
 
 export const HERO_INFO = {
   name: "Ing. Dr. Ibrahim Abdulai Sawaneh",
@@ -388,6 +388,12 @@ export const RESEARCH_STATISTICS = {
   yearsExperience: 22
 };
 
+
+export const GALLERY_CATEGORIES: GalleryCategory[] = [
+  { id: 'cat-1', name: 'Conferences' },
+  { id: 'cat-2', name: 'Teaching' },
+  { id: 'cat-3', name: 'Research' }
+];
 
 export const GALLERY_IMAGES: GalleryImage[] = [
   {

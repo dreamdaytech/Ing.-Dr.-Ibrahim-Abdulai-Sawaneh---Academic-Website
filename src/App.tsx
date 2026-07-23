@@ -8,8 +8,8 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { FileText, BookOpen, ChevronRight, Award, GraduationCap, ArrowRight, ShieldCheck, Mail, Database, Sparkles, Cloud, Wifi, Sun, Moon } from 'lucide-react';
 
 // Data imports
-import { PUBLICATIONS, BOOKS, TIMELINE_EXPERIENCE, TALK_EVENTS, BLOG_POSTS, HERO_INFO, BIOGRAPHY_DETAILS, RESEARCH_STATISTICS, GALLERY_IMAGES } from './data/academicData';
-import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage } from './types';
+import { PUBLICATIONS, BOOKS, TIMELINE_EXPERIENCE, TALK_EVENTS, BLOG_POSTS, HERO_INFO, BIOGRAPHY_DETAILS, RESEARCH_STATISTICS, GALLERY_IMAGES, GALLERY_CATEGORIES } from './data/academicData';
+import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage, GalleryCategory } from './types';
 
 // Firebase imports
 import { fetchCollection, seedDatabase } from './lib/firebase';
@@ -38,6 +38,7 @@ export default function App() {
   const [dynamicHeroInfo, setDynamicHeroInfo] = useState<any>(HERO_INFO);
   const [dynamicBiographyDetails, setDynamicBiographyDetails] = useState<any>(BIOGRAPHY_DETAILS);
   const [dynamicGalleryImages, setDynamicGalleryImages] = useState<GalleryImage[]>(GALLERY_IMAGES);
+  const [dynamicGalleryCategories, setDynamicGalleryCategories] = useState<GalleryCategory[]>(GALLERY_CATEGORIES);
 
   const [selectedPubId, setSelectedPubId] = useState<string | null>(null);
   const [selectedBlogPostId, setSelectedBlogPostId] = useState<string | null>(null);
@@ -74,11 +75,11 @@ export default function App() {
         const timeline = await fetchCollection<TimelineItem>('timelineItems');
         const profile = await fetchCollection<any>('profile');
         const gallery = await fetchCollection<GalleryImage>('galleryImages');
-
+        const galCats = await fetchCollection<GalleryCategory>('galleryCategories');
         const heroDoc = profile.find(p => p.id === 'hero');
         const bioDoc = profile.find(p => p.id === 'biography');
 
-        if (pubs.length === 0 && bks.length === 0 && posts.length === 0 && events.length === 0 && timeline.length === 0 && profile.length === 0 && gallery.length === 0) {
+        if (pubs.length === 0 && bks.length === 0 && posts.length === 0 && events.length === 0 && timeline.length === 0 && profile.length === 0 && gallery.length === 0 && galCats.length === 0) {
           console.log("Firestore database is empty. Auto-seeding default collections with rich demo data...");
           await seedDatabase({
             publications: PUBLICATIONS,
@@ -88,7 +89,8 @@ export default function App() {
             timelineItems: TIMELINE_EXPERIENCE,
             heroInfo: HERO_INFO,
             biographyDetails: BIOGRAPHY_DETAILS,
-            galleryImages: GALLERY_IMAGES
+            galleryImages: GALLERY_IMAGES,
+            galleryCategories: GALLERY_CATEGORIES
           });
           setIsDbConnected(true);
         } else {
@@ -99,6 +101,7 @@ export default function App() {
           if (events.length > 0) setDynamicTalkEvents(events);
           if (timeline.length > 0) setDynamicTimelineItems(timeline);
           if (gallery.length > 0) setDynamicGalleryImages(gallery.sort((a, b) => (a.order || 0) - (b.order || 0)));
+          if (galCats.length > 0) setDynamicGalleryCategories(galCats);
           if (heroDoc) setDynamicHeroInfo(heroDoc);
           if (bioDoc) setDynamicBiographyDetails(bioDoc);
           setIsDbConnected(true);
@@ -401,7 +404,7 @@ export default function App() {
       case 'cv':
         return <CVSection timelineItems={dynamicTimelineItems} />;
       case 'gallery':
-        return <GallerySection galleryImages={dynamicGalleryImages} />;
+        return <GallerySection galleryImages={dynamicGalleryImages} galleryCategories={dynamicGalleryCategories} />;
       case 'media':
         return <MediaSection talkEvents={dynamicTalkEvents} />;
       case 'blog':
@@ -433,6 +436,8 @@ export default function App() {
             setBiographyDetails={setDynamicBiographyDetails}
             galleryImages={dynamicGalleryImages}
             setGalleryImages={setDynamicGalleryImages}
+            galleryCategories={dynamicGalleryCategories}
+            setGalleryCategories={setDynamicGalleryCategories}
           />
         );
       case 'contact':

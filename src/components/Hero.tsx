@@ -118,25 +118,23 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
               className="relative w-full max-w-sm"
             >
               <div className="border border-editorial-border bg-white p-6 shadow-xs">
-                {/* Book cover visual represent */}
-                <div className="flex h-56 w-full items-center justify-center bg-editorial-navy text-white relative overflow-hidden border-r-4 border-editorial-gold">
-                  <div className="absolute inset-0 bg-white/[0.02] bg-[size:10px_10px]"></div>
-                  
-                  <div className="text-center z-10 flex flex-col items-center p-4">
-                    <span className="font-serif text-5xl font-bold tracking-widest text-white">
-                      {heroInfo.avatarPlaceholder}
-                    </span>
-                    <span className="block mt-4 text-[9px] font-mono tracking-widest text-slate-300 uppercase">
-                      {heroInfo.name}
-                    </span>
-                    <span className="block text-[10px] text-editorial-gold font-sans tracking-widest uppercase mt-1">
-                      {heroInfo.titles && heroInfo.titles.length > 2 ? heroInfo.titles[heroInfo.titles.length - 1] : 'Academic Senate Leader'}
-                    </span>
-                  </div>
+                {/* Profile Image */}
+                <div className="flex h-80 w-full items-center justify-center bg-slate-50 relative overflow-hidden border-r-4 border-editorial-gold">
+                  <img src="/hero.jpg" alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Meta details */}
                 <div className="mt-6 space-y-4 text-xs text-slate-600 font-sans">
+                  <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+                    <div className="p-1.5 bg-slate-50 text-editorial-navy">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-800 block">Ing. Dr. Ibrahim Abdulai Sawaneh</span>
+                      <span className="block text-[9px] font-mono text-slate-400 uppercase leading-none mt-1">Higher Education Leader</span>
+                    </div>
+                  </div>
+                  
                   <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                     <div className="p-1.5 bg-slate-50 text-editorial-navy">
                       <ShieldCheck className="h-4 w-4" />

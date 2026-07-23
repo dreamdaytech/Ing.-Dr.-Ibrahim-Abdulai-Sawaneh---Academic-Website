@@ -71,6 +71,11 @@ export interface ResearchArea {
   keyTopics: string[];
 }
 
+export interface GalleryCategory {
+  id: string;
+  name: string;
+}
+
 export interface GalleryImage {
   id: string;
   url: string;

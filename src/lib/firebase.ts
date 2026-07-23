@@ -82,6 +82,7 @@ export async function seedDatabase(data: {
   heroInfo?: any;
   biographyDetails?: any;
   galleryImages?: any[];
+  galleryCategories?: any[];
 }): Promise<void> {
   try {
     // Seed Publications
@@ -114,6 +115,12 @@ export async function seedDatabase(data: {
     if (data.galleryImages) {
       for (const item of data.galleryImages) {
         await saveDocument('galleryImages', item.id, item);
+      }
+    }
+    
+    if (data.galleryCategories) {
+      for (const item of data.galleryCategories) {
+        await saveDocument('galleryCategories', item.id, item);
       }
     }
     console.log('Database successfully seeded!');

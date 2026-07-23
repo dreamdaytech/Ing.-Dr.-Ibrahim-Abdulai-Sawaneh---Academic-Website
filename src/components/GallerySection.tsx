@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import { X, ZoomIn, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GalleryImage } from '../types';
-import { GALLERY_IMAGES as DEFAULT_GALLERY } from '../data/academicData';
+import { GalleryImage, GalleryCategory } from '../types';
+import { GALLERY_IMAGES as DEFAULT_GALLERY, GALLERY_CATEGORIES } from '../data/academicData';
 
 interface GallerySectionProps {
   galleryImages?: GalleryImage[];
+  galleryCategories?: GalleryCategory[];
 }
 
-export default function GallerySection({ galleryImages = DEFAULT_GALLERY }: GallerySectionProps) {
+export default function GallerySection({ galleryImages = DEFAULT_GALLERY, galleryCategories = GALLERY_CATEGORIES }: GallerySectionProps) {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('All');
   
-  const categories = ['All', ...Array.from(new Set(galleryImages.map(img => img.category)))];
+  const categories = ['All', ...galleryCategories.map(c => c.name)];
   
   const filteredImages = activeCategory === 'All' 
     ? galleryImages 
