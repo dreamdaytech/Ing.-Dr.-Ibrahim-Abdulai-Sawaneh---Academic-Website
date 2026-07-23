@@ -1,7 +1,18 @@
 const fs = require('fs');
 let code = fs.readFileSync('src/components/CMSDashboard.tsx', 'utf8');
 
-const target = `                      <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+const target = `                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Scholarly Full Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={profileName}
+                          onChange={(e) => setProfileName(e.target.value)}
+                          className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Logo Image URL</label>
                           <input
@@ -48,9 +59,43 @@ const target = `                      <div className="col-span-2 grid grid-cols-
                             }
                           }} className="text-xs" disabled={isUploadingImg} />
                         </div>
-                      </div>`;
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Avatar Initials *</label>
+                        <input
+                          type="text"
+                          required
+                          maxLength={3}
+                          value={profileAvatarPlaceholder}
+                          onChange={(e) => setProfileAvatarPlaceholder(e.target.value)}
+                          className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none font-mono"
+                        />
+                      </div>
+                    </div>`;
 
-const replacement = `                      <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+const replacement = `                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Scholarly Full Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={profileName}
+                          onChange={(e) => setProfileName(e.target.value)}
+                          className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Avatar Initials *</label>
+                        <input
+                          type="text"
+                          required
+                          maxLength={3}
+                          value={profileAvatarPlaceholder}
+                          onChange={(e) => setProfileAvatarPlaceholder(e.target.value)}
+                          className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none font-mono"
+                        />
+                      </div>
+                      <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Logo Image URL</label>
                           <input
@@ -72,12 +117,7 @@ const replacement = `                      <div className="col-span-2 grid grid-
                                 setIsUploadingImg(false);
                               }
                             }
-                          }} className="text-xs mb-4" disabled={isUploadingImg} />
-                          {profileLogoUrl && (
-                            <div className="mt-2 border border-editorial-border p-2 bg-white flex items-center justify-center min-h-[100px]">
-                              <img src={profileLogoUrl} alt="Logo Preview" className="max-h-20 object-contain" />
-                            </div>
-                          )}
+                          }} className="text-xs" disabled={isUploadingImg} />
                         </div>
                         <div>
                           <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Hero Image URL</label>
@@ -100,19 +140,15 @@ const replacement = `                      <div className="col-span-2 grid grid-
                                 setIsUploadingImg(false);
                               }
                             }
-                          }} className="text-xs mb-4" disabled={isUploadingImg} />
-                          {profileHeroUrl && (
-                            <div className="mt-2 border border-editorial-border p-2 bg-white flex items-center justify-center min-h-[100px]">
-                              <img src={profileHeroUrl} alt="Hero Preview" className="max-h-32 object-cover w-full" />
-                            </div>
-                          )}
+                          }} className="text-xs" disabled={isUploadingImg} />
                         </div>
-                      </div>`;
+                      </div>
+                    </div>`;
 
 if (code.includes(target)) {
     code = code.replace(target, replacement);
     fs.writeFileSync('src/components/CMSDashboard.tsx', code, 'utf8');
-    console.log("Patched images successfully");
+    console.log("Patched layout successfully");
 } else {
     console.log("Could not find target block");
 }

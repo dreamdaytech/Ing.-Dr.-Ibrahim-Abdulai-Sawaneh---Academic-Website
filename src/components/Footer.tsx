@@ -5,9 +5,20 @@ import { HERO_INFO } from '../data/academicData';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
+  heroInfo?: any;
 }
 
-export default function Footer({ setActiveTab }: FooterProps) {
+
+const formatImgUrl = (url?: string | null) => {
+  if (!url) return '';
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+  }
+  return url;
+};
+
+export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
   const handleNavClick = (tabId: string) => {
     setActiveTab(tabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -21,7 +32,7 @@ export default function Footer({ setActiveTab }: FooterProps) {
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2">
               <div className="h-9 w-9 bg-white text-editorial-navy rounded-none flex items-center justify-center shrink-0">
-                <img src={logoImg} alt="IAS Logo" className="h-full w-full object-contain" />
+                <img src={heroInfo?.logoUrl ? formatImgUrl(heroInfo.logoUrl) : logoImg} referrerPolicy="no-referrer" alt="IAS Logo" className="h-full w-full object-contain" />
               </div>
               <span className="font-serif text-base font-bold text-white tracking-tight">
                 Ing. Dr. Ibrahim A. Sawaneh

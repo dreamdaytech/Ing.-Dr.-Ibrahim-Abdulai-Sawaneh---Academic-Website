@@ -10,6 +10,7 @@ interface NavbarProps {
   blogPosts?: BlogPost[];
   onSelectPublication?: (id: string | null) => void;
   onSelectBlogPost?: (id: string | null) => void;
+  heroInfo?: any;
 }
 
 interface SubmenuItem {
@@ -24,13 +25,24 @@ interface NavItem {
   submenu?: SubmenuItem[];
 }
 
+
+const formatImgUrl = (url?: string | null) => {
+  if (!url) return '';
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+  }
+  return url;
+};
+
 export default function Navbar({ 
   activeTab, 
   setActiveTab,
   publications = [],
   blogPosts = [],
   onSelectPublication,
-  onSelectBlogPost
+  onSelectBlogPost,
+  heroInfo = {}
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredItemId, setHoveredItemId] = useState<string | null>(null);
@@ -112,7 +124,7 @@ export default function Navbar({
           {/* Logo / Scholar Name */}
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center shrink-0">
-              <img src={logoImg} alt="IAS Logo" className="h-full w-full object-contain" />
+              <img src={heroInfo?.logoUrl ? formatImgUrl(heroInfo.logoUrl) : logoImg} referrerPolicy="no-referrer" alt="IAS Logo" className="h-full w-full object-contain" />
             </div>
             <div>
               <span 

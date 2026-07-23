@@ -502,6 +502,7 @@ export default function App() {
         blogPosts={dynamicBlogPosts}
         onSelectPublication={setSelectedPubId}
         onSelectBlogPost={setSelectedBlogPostId}
+        heroInfo={dynamicHeroInfo}
       />
 
       {/* Primary Page Canvas */}
@@ -520,7 +521,7 @@ export default function App() {
       </main>
 
       {/* Master footer */}
-      <Footer setActiveTab={setActiveTab} />
+      <Footer setActiveTab={setActiveTab} heroInfo={dynamicHeroInfo} />
       <ScrollToTop />
     </div>
   );

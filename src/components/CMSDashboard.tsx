@@ -40,6 +40,16 @@ const quillModules = {
   ],
 };
 
+
+const formatImgUrl = (url?: string | null) => {
+  if (!url) return '';
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+  }
+  return url;
+};
+
 export default function CMSDashboard({
   publications,
   setPublications,
@@ -155,6 +165,9 @@ export default function CMSDashboard({
   const [profileEmail, setProfileEmail] = useState(heroInfo?.email || '');
   const [profilePhone, setProfilePhone] = useState(heroInfo?.phone || '');
   const [profileAddress, setProfileAddress] = useState(heroInfo?.address || '');
+  const [profileLogoUrl, setProfileLogoUrl] = useState(heroInfo?.logoUrl || '');
+  const [profileHeroUrl, setProfileHeroUrl] = useState(heroInfo?.heroUrl || '');
+  const [isUploadingImg, setIsUploadingImg] = useState(false);
 
   const [profileIntroduction, setProfileIntroduction] = useState(biographyDetails?.introduction || '');
   const [profileLongForm, setProfileLongForm] = useState(biographyDetails?.longForm?.join('\n\n') || '');
@@ -175,6 +188,8 @@ export default function CMSDashboard({
       setProfileEmail(heroInfo.email || '');
       setProfilePhone(heroInfo.phone || '');
       setProfileAddress(heroInfo.address || '');
+      setProfileLogoUrl(heroInfo.logoUrl || '');
+      setProfileHeroUrl(heroInfo.heroUrl || '');
     }
   }, [heroInfo]);
 
@@ -802,7 +817,9 @@ export default function CMSDashboard({
             linkedin: profileLinkedin,
             email: profileEmail,
             phone: profilePhone,
-            address: profileAddress
+            address: profileAddress,
+            logoUrl: profileLogoUrl,
+            heroUrl: profileHeroUrl
           };
           await saveDocument('profile', 'hero', updatedHero);
           setHeroInfo(updatedHero);
@@ -2031,6 +2048,64 @@ export default function CMSDashboard({
                           onChange={(e) => setProfileAvatarPlaceholder(e.target.value)}
                           className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none font-mono"
                         />
+                      </div>
+                      <div className="col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Logo Image URL</label>
+                          <input
+                            type="text"
+                            value={profileLogoUrl}
+                            onChange={(e) => setProfileLogoUrl(e.target.value)}
+                            placeholder="https://... or /logo.png"
+                            className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none mb-2"
+                          />
+                          <input type="file" accept="image/*" onChange={async (e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setIsUploadingImg(true);
+                              try {
+                                const url = await uploadFile(e.target.files[0], 'site/logo_' + Date.now());
+                                setProfileLogoUrl(url);
+                              } catch(err) {
+                                alert("Failed to upload image. Storage rules might need to be configured.");
+                              } finally {
+                                setIsUploadingImg(false);
+                              }
+                            }
+                          }} className="text-xs mb-4" disabled={isUploadingImg} />
+                          {profileLogoUrl && (
+                            <div className="mt-2 border border-editorial-border p-2 bg-white flex items-center justify-center min-h-[100px]">
+                              <img src={formatImgUrl(profileLogoUrl)} referrerPolicy="no-referrer" alt="Logo Preview" className="max-h-20 object-contain" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Hero Image URL</label>
+                          <input
+                            type="text"
+                            value={profileHeroUrl}
+                            onChange={(e) => setProfileHeroUrl(e.target.value)}
+                            placeholder="https://... or /hero.jpg"
+                            className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none mb-2"
+                          />
+                          <input type="file" accept="image/*" onChange={async (e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setIsUploadingImg(true);
+                              try {
+                                const url = await uploadFile(e.target.files[0], 'site/hero_' + Date.now());
+                                setProfileHeroUrl(url);
+                              } catch(err) {
+                                alert("Failed to upload image. Storage rules might need to be configured.");
+                              } finally {
+                                setIsUploadingImg(false);
+                              }
+                            }
+                          }} className="text-xs mb-4" disabled={isUploadingImg} />
+                          {profileHeroUrl && (
+                            <div className="mt-2 border border-editorial-border p-2 bg-white flex items-center justify-center min-h-[100px]">
+                              <img src={formatImgUrl(profileHeroUrl)} referrerPolicy="no-referrer" alt="Hero Preview" className="max-h-32 object-cover w-full" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 

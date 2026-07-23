@@ -9,6 +9,16 @@ interface HeroProps {
   heroInfo?: typeof HERO_INFO;
 }
 
+
+const formatImgUrl = (url?: string | null) => {
+  if (!url) return '';
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w1000`;
+  }
+  return url;
+};
+
 export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) {
   // Animation presets
   const containerVariants = {
@@ -121,7 +131,7 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
               <div className="border border-editorial-border bg-white p-6 shadow-xs">
                 {/* Profile Image */}
                 <div className="flex h-80 w-full items-center justify-center bg-slate-50 relative overflow-hidden border-r-4 border-editorial-gold">
-                  <img src={heroImg} alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
+                  <img src={heroInfo?.heroUrl ? formatImgUrl(heroInfo.heroUrl) : heroImg} referrerPolicy="no-referrer" alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Meta details */}
