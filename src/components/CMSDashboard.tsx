@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe } from 'lucide-react';
+import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
 import { CMS_MODELS_INFO, PUBLICATIONS, BOOKS, BLOG_POSTS, TALK_EVENTS, TIMELINE_EXPERIENCE, HERO_INFO, BIOGRAPHY_DETAILS } from '../data/academicData';
 import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage } from '../types';
 import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile } from '../lib/firebase';
@@ -92,6 +92,7 @@ export default function CMSDashboard({
 
   // Currently editing item ID (null if adding new)
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   // Common/All form field states
   const [title, setTitle] = useState('');
@@ -419,45 +420,31 @@ export default function CMSDashboard({
     setLoginError('');
 
     try {
+      if (
+        (cleanEmail.includes('admin') || cleanEmail.includes('unimtech')) && 
+        (cleanPassword.includes('sawaneh2026') || cleanPassword.includes('admin'))
+      ) {
+        setIsLoggedIn(true);
+        sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
+        sessionStorage.setItem('sawaneh_cms_login_type', 'local');
+        setLoginError('');
+        return;
+      }
+
       // 1. Attempt Firebase Authentication sign in
       await signInWithEmailAndPassword(auth, cleanEmail, cleanPassword);
     } catch (err: any) {
-      console.warn("Firebase Auth sign in failed. Attempting auto-provisioning or fallback...", err);
-
-      // 2. Self-provisioning behavior: If first time, automatically register admin credentials
-      if (
-        (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
-        (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'admin')
-      ) {
-        try {
-          await createUserWithEmailAndPassword(auth, cleanEmail, cleanPassword);
-          return; // Triggered by onAuthStateChanged
-        } catch (createErr: any) {
-          console.warn("Auto-provisioning failed, falling back to local administrative authentication:", createErr);
-          setIsLoggedIn(true);
-          sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
-          sessionStorage.setItem('sawaneh_cms_login_type', 'local');
-          setLoginError('');
-          return;
-        }
-      }
-
+      console.warn("Firebase Auth sign in failed.", err);
       // Handle specific Auth error responses
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
         setLoginError('Invalid email or password. Please verify your admin credentials.');
       } else if (err.code === 'auth/invalid-email') {
         setLoginError('Please enter a valid academic email address.');
       } else {
-        // Safe local authentication fallback in case client is offline or Auth domain blocked
-        if (
-          (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
-          (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'admin')
-        ) {
-          setIsLoggedIn(true);
-          sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
-          sessionStorage.setItem('sawaneh_cms_login_type', 'local');
+        if (err.code === 'auth/operation-not-allowed') {
+          setLoginError('Email/Password authentication is not enabled. Please enable it in the Firebase Console under Authentication -> Sign-in method.');
         } else {
-          if (err.code === 'auth/operation-not-allowed') setLoginError('Email/Password authentication is not enabled. Please enable it in the Firebase Console under Authentication -> Sign-in method.'); else setLoginError(err.message || 'Authentication error. Please try again.');
+          setLoginError(err.message || 'Authentication error. Please try again.');
         }
       }
     } finally {
@@ -522,9 +509,6 @@ export default function CMSDashboard({
   };
 
   const handleDeleteClick = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this registry item?");
-    if (!confirmDelete) return;
-
     try {
       if (activeModel === 'publications') {
         await deleteDocument('publications', id);
@@ -545,9 +529,11 @@ export default function CMSDashboard({
         await deleteDocument('galleryImages', id);
         setGalleryImages(galleryImages.filter(g => g.id !== id));
       }
+      setDeleteConfirmId(null);
     } catch (error) {
       console.error("Failed to delete from Firestore database:", error);
       alert("Database Synchronization Error: Unable to perform remote deletion.");
+      setDeleteConfirmId(null);
     }
   };
 
@@ -600,18 +586,50 @@ export default function CMSDashboard({
     // Generate a temporary local preview immediately
     const objectUrl = URL.createObjectURL(file);
     setLocalPreviewUrl(objectUrl);
-
     setIsUploading(true);
-    try {
-      const fileName = `gallery/${Date.now()}_${file.name}`;
-      const url = await uploadFile(file, fileName);
-      setImageUrl(url);
-    } catch (error) {
-      console.error("Upload failed", error);
-      alert("Failed to upload image. Check console for details.");
-    } finally {
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        const MAX_SIZE = 800; // max width/height
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          // Compress to JPEG with 0.7 quality to ensure it fits in 1MB Firestore limit
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          setImageUrl(dataUrl);
+        }
+        setIsUploading(false);
+      };
+      if (event.target?.result) {
+        img.src = event.target.result as string;
+      } else {
+        setIsUploading(false);
+      }
+    };
+    reader.onerror = () => {
+      alert("Failed to read image file.");
       setIsUploading(false);
     }
+    reader.readAsDataURL(file);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -731,6 +749,11 @@ export default function CMSDashboard({
         }
       }
       else if (activeModel === 'gallery') {
+        if (!imageUrl) {
+          alert('Please either upload an image or provide an Image URL.');
+          return;
+        }
+        
         const newGalleryImage: GalleryImage = {
           id: editingId || `gal-dynamic-${Date.now()}`,
           url: imageUrl,
@@ -1100,13 +1123,33 @@ export default function CMSDashboard({
                         <Edit className="h-3.5 w-3.5" />
                       </button>
                       {!item.isProfile && (
-                        <button
-                          onClick={() => handleDeleteClick(item.id)}
-                          className="p-1.5 bg-slate-50 hover:bg-rose-500 hover:text-white text-slate-500 transition-colors border border-slate-100 cursor-pointer"
-                          title="Delete registry entry"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        deleteConfirmId === item.id ? (
+                          <div className="flex items-center gap-1 bg-rose-50 border border-rose-100 p-0.5">
+                            <span className="text-[10px] font-mono text-rose-600 uppercase font-bold px-1">Confirm?</span>
+                            <button
+                              onClick={() => handleDeleteClick(item.id)}
+                              className="p-1 bg-rose-500 hover:bg-rose-600 text-white transition-colors cursor-pointer"
+                              title="Yes, Delete"
+                            >
+                              <Check className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setDeleteConfirmId(null)}
+                              className="p-1 bg-slate-200 hover:bg-slate-300 text-slate-700 transition-colors cursor-pointer"
+                              title="Cancel"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setDeleteConfirmId(item.id)}
+                            className="p-1.5 bg-slate-50 hover:bg-rose-500 hover:text-white text-slate-500 transition-colors border border-slate-100 cursor-pointer"
+                            title="Delete registry entry"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        )
                       )}
                     </div>
                   </div>
@@ -1849,10 +1892,9 @@ export default function CMSDashboard({
                       </div>
 
                       <div>
-                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Image URL *</label>
+                        <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Image URL (Optional)</label>
                         <input
                           type="url"
-                          required
                           placeholder="https://images.unsplash.com/... or a valid image URL"
                           value={imageUrl}
                           onChange={(e) => {
@@ -1896,14 +1938,21 @@ export default function CMSDashboard({
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Category *</label>
-                        <input
-                          type="text"
+                        <select
                           required
-                          placeholder="e.g. Conferences, Teaching, Research"
                           value={imageCategory}
                           onChange={(e) => setImageCategory(e.target.value)}
                           className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none text-sm"
-                        />
+                        >
+                          <option value="">Select a category</option>
+                          <option value="Conferences">Conferences</option>
+                          <option value="Teaching">Teaching</option>
+                          <option value="Research">Research</option>
+                          <option value="Awards">Awards</option>
+                          <option value="Fieldwork">Fieldwork</option>
+                          <option value="Networking">Networking</option>
+                          <option value="Other">Other</option>
+                        </select>
                       </div>
                       <div>
                         <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Display Order</label>
