@@ -115,7 +115,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
             </p>
             <div className="space-y-2 text-[11px] font-mono">
               <a 
-                href={HERO_INFO.researchGate} 
+                href={heroInfo.researchGate} 
                 target="_blank" 
                 referrerPolicy="no-referrer"
                 className="flex items-center justify-between p-3 bg-white/5 border border-white/10 hover:border-editorial-gold hover:bg-white/10 transition-all text-slate-200"
@@ -124,7 +124,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <span className="text-editorial-gold">View →</span>
               </a>
               <a 
-                href={HERO_INFO.orcid} 
+                href={heroInfo.orcid} 
                 target="_blank" 
                 referrerPolicy="no-referrer"
                 className="flex items-center justify-between p-3 bg-white/5 border border-white/10 hover:border-editorial-gold hover:bg-white/10 transition-all text-slate-200"
@@ -133,7 +133,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <span className="text-editorial-gold">0000-0000 →</span>
               </a>
               <a 
-                href={HERO_INFO.googleScholar} 
+                href={heroInfo.googleScholar} 
                 target="_blank" 
                 referrerPolicy="no-referrer"
                 className="flex items-center justify-between p-3 bg-white/5 border border-white/10 hover:border-editorial-gold hover:bg-white/10 transition-all text-slate-200"

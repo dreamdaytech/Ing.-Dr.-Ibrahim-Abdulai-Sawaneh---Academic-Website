@@ -6,9 +6,10 @@ import { TimelineItem } from '../types';
 
 interface CVSectionProps {
   timelineItems?: TimelineItem[];
+  heroInfo?: typeof HERO_INFO;
 }
 
-export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE }: CVSectionProps) {
+export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInfo = HERO_INFO }: CVSectionProps) {
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
   const filteredTimeline = timelineItems.filter(item => {
@@ -70,10 +71,10 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE }: CVSec
 
       {/* PRINT-ONLY HEADER */}
       <div className="hidden print-only border-b-2 border-slate-900 pb-6 mb-8">
-        <h1 className="font-serif text-3xl font-bold text-slate-900">{HERO_INFO.name}</h1>
-        <p className="text-sm font-semibold text-slate-700 uppercase mt-1">{HERO_INFO.tagline}</p>
+        <h1 className="font-serif text-3xl font-bold text-slate-900">{heroInfo.name}</h1>
+        <p className="text-sm font-semibold text-slate-700 uppercase mt-1">{heroInfo.tagline}</p>
         <p className="text-xs text-slate-500 mt-2 font-mono leading-relaxed">
-          Email: {HERO_INFO.email} | Phone: {HERO_INFO.phone} | Affiliation: {HERO_INFO.address}
+          Email: {heroInfo.email} | Phone: {heroInfo.phone} | Affiliation: {heroInfo.address}
         </p>
       </div>
 

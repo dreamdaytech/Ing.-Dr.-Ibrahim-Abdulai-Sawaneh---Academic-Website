@@ -18,7 +18,9 @@ export const HERO_INFO = {
   linkedin: "https://linkedin.com/in/ibrahim-abdulai-sawaneh",
   email: "i.sawaneh@institution.edu.sl",
   phone: "+232 (76) 000-000",
-  address: "Department of Information Systems, University of Management and Technology (UNIMTECH), Freetown, Sierra Leone"
+  address: "Department of Information Systems, University of Management and Technology (UNIMTECH), Freetown, Sierra Leone",
+  logoUrl: "",
+  heroUrl: ""
 };
 
 export const BIOGRAPHY_DETAILS = {

@@ -1,52 +1,50 @@
 const fs = require('fs');
-let code = fs.readFileSync('server.ts', 'utf8');
+let c = fs.readFileSync('server.ts', 'utf8');
 
-const target = `    } catch (error: any) {
-      console.error("Error in discover-publications API:", error);
-      res.status(500).json({ error: error.message || "Failed to query academic databases" });
-    }`;
-
-const replacement = `    } catch (error: any) {
-      console.error("Error in discover-publications API:", error);
-      
-      // Fallback to mock data if rate limited or quota exceeded
-      const isQuotaError = error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("quota") || error?.message?.includes("RESOURCE_EXHAUSTED");
-      if (isQuotaError) {
-        console.log("Quota exceeded, returning mock publications data as fallback.");
-        return res.json({
-          publications: [
-            {
-              title: "Adaptive Data Filtering Protocols in High-Latency Environments",
-              authors: "Sawaneh, I. A., & Chen, Y.",
-              year: 2024,
-              journal: "Journal of Network Security",
-              category: "journal-article",
-              abstract: "This paper introduces a novel adaptive filtering protocol designed to maintain throughput and minimize packet loss in inherently high-latency edge networks.",
-              link: "https://example.com/mock1"
-            },
-            {
-              title: "Enhancing AI-Driven Cybersecurity Threat Detection Methodologies",
-              authors: "Sawaneh, I. A.",
-              year: 2023,
-              journal: "International Conference on Information Systems",
-              category: "conference-paper",
-              abstract: "An examination of machine learning pipelines for real-time threat detection, focusing on minimizing false positives in enterprise network monitoring.",
-              link: "https://example.com/mock2"
-            }
-          ],
-          sources: [
-            { title: "Google Scholar (Simulated Fallback)", uri: "https://scholar.google.com" }
-          ]
-        });
-      }
-
-      res.status(500).json({ error: error.message || "Failed to query academic databases" });
-    }`;
-
-if (code.includes(target)) {
-  code = code.replace(target, replacement);
-  fs.writeFileSync('server.ts', code, 'utf8');
-  console.log('Successfully patched server.ts');
-} else {
-  console.log('Target not found in server.ts');
+const importStatement = `import nodemailer from 'nodemailer';\n`;
+if (!c.includes("import nodemailer")) {
+  c = c.replace('import dotenv from "dotenv";', importStatement + 'import dotenv from "dotenv";');
 }
+
+const endpoint = `
+  app.post("/api/notify-admin", async (req, res) => {
+    try {
+      const { type, email, org, proposal } = req.body;
+      
+      // Use Ethereal Email for testing if no real credentials are provided
+      let testAccount = await nodemailer.createTestAccount();
+      
+      let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.SMTP_USER || testAccount.user, 
+          pass: process.env.SMTP_PASS || testAccount.pass, 
+        },
+      });
+
+      let info = await transporter.sendMail({
+        from: '"Academic Gateway System" <no-reply@academicgateway.local>',
+        to: "admin@academicgateway.local", // list of receivers
+        subject: \`New \${type} Submitted\`, // Subject line
+        text: \`A new \${type} has been submitted.\\n\\nOrganization/Name: \${org}\\nEmail: \${email}\\nProposal: \${proposal}\`, 
+        html: \`<p>A new <b>\${type}</b> has been submitted.</p><p><b>Organization/Name:</b> \${org}<br/><b>Email:</b> \${email}<br/><b>Proposal:</b> \${proposal}</p>\`, 
+      });
+
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+      
+      res.json({ success: true, previewUrl: nodemailer.getTestMessageUrl(info) });
+    } catch (error: any) {
+      console.error("Error sending notification:", error);
+      res.status(500).json({ error: "Failed to send notification" });
+    }
+  });
+
+  // API route to discover
+`;
+
+c = c.replace("  // API route to discover", endpoint);
+
+fs.writeFileSync('server.ts', c);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
+import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Mail, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
 import { CMS_MODELS_INFO, PUBLICATIONS, BOOKS, BLOG_POSTS, TALK_EVENTS, TIMELINE_EXPERIENCE, HERO_INFO, BIOGRAPHY_DETAILS } from '../data/academicData';
-import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage, GalleryCategory } from '../types';
-import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile } from '../lib/firebase';
+import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage, GalleryCategory, Message } from '../types';
+import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile, fetchCollection } from '../lib/firebase';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 interface CMSDashboardProps {
@@ -90,19 +90,27 @@ export default function CMSDashboard({
         sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
         sessionStorage.setItem('sawaneh_cms_login_type', 'firebase');
       } else {
-        const loginType = sessionStorage.getItem('sawaneh_cms_login_type');
-        if (loginType !== 'local') {
-          setIsLoggedIn(false);
-          sessionStorage.removeItem('sawaneh_cms_isLoggedIn');
-          sessionStorage.removeItem('sawaneh_cms_login_type');
-        }
+        setIsLoggedIn(false);
+        sessionStorage.removeItem('sawaneh_cms_isLoggedIn');
+        sessionStorage.removeItem('sawaneh_cms_login_type');
       }
     });
     return () => unsubscribe();
   }, []);
 
   // Selected category model to manage
-  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery' | 'galleryCategories'>('publications');
+  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery' | 'galleryCategories' | 'messages'>('publications');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  useEffect(() => {
+    if (activeModel === 'messages') {
+      setIsLoadingMessages(true);
+      fetchCollection<Message>('messages').then(msgs => {
+        setMessages(msgs.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      }).catch(console.error).finally(() => setIsLoadingMessages(false));
+    }
+  }, [activeModel]);
 
   // Currently editing item ID (null if adding new)
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -168,6 +176,7 @@ export default function CMSDashboard({
   const [profileLogoUrl, setProfileLogoUrl] = useState(heroInfo?.logoUrl || '');
   const [profileHeroUrl, setProfileHeroUrl] = useState(heroInfo?.heroUrl || '');
   const [isUploadingImg, setIsUploadingImg] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [profileIntroduction, setProfileIntroduction] = useState(biographyDetails?.introduction || '');
   const [profileLongForm, setProfileLongForm] = useState(biographyDetails?.longForm?.join('\n\n') || '');
@@ -285,6 +294,7 @@ export default function CMSDashboard({
 
   const handleEditDiscovered = (discovered: any) => {
     setEditingId(null);
+    setSelectedMessage(null);
     setTitle(discovered.title || '');
     setAuthors(discovered.authors || 'Sawaneh, I. A.');
     setYear(discovered.year ? discovered.year.toString() : '2026');
@@ -431,18 +441,7 @@ export default function CMSDashboard({
     setLoginError('');
 
     try {
-      if (
-        (cleanEmail.includes('admin') || cleanEmail.includes('unimtech')) && 
-        (cleanPassword.includes('sawaneh2026') || cleanPassword.includes('admin'))
-      ) {
-        setIsLoggedIn(true);
-        sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
-        sessionStorage.setItem('sawaneh_cms_login_type', 'local');
-        setLoginError('');
-        return;
-      }
-
-      // 1. Attempt Firebase Authentication sign in
+      // Attempt Firebase Authentication sign in
       await signInWithEmailAndPassword(auth, cleanEmail, cleanPassword);
     } catch (err: any) {
       console.warn("Firebase Auth sign in failed.", err);
@@ -518,6 +517,8 @@ export default function CMSDashboard({
       setLocalPreviewUrl('');
     } else if (activeModel === 'galleryCategories') {
       setTitle(item.name || '');
+    } else if (activeModel === 'messages') {
+      setSelectedMessage(item);
     }
   };
 
@@ -544,6 +545,9 @@ export default function CMSDashboard({
       } else if (activeModel === 'galleryCategories') {
         await deleteDocument('galleryCategories', id);
         setGalleryCategories(galleryCategories.filter(c => c.id !== id));
+      } else if (activeModel === 'messages') {
+        await deleteDocument('messages', id);
+        setMessages(messages.filter(m => m.id !== id));
       }
       setDeleteConfirmId(null);
     } catch (error) {
@@ -842,6 +846,8 @@ export default function CMSDashboard({
     } catch (error) {
       console.error("Failed to save document to Firestore:", error);
       alert("Database Synchronization Error: Unable to save changes to the live database.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -855,6 +861,7 @@ export default function CMSDashboard({
       case 'talks': return talkEvents;
       case 'gallery': return galleryImages.map(gi => ({ ...gi, title: gi.caption }));
       case 'galleryCategories': return galleryCategories.map(c => ({ ...c, title: c.name }));
+      case 'messages': return messages.map(m => ({ ...m, title: `${m.type}: ${m.subject || m.name || m.org || 'Unknown'}` }));
       case 'profile': return [
         { id: 'hero', title: 'Scholarly Hero Section Details', isProfile: true },
         { id: 'biography', title: 'Scholarly Biography & Vision', isProfile: true }
@@ -900,20 +907,6 @@ export default function CMSDashboard({
           <p className="text-xs text-slate-500 text-center leading-relaxed mb-6 font-sans">
             Please authenticate to manage publications, monographs, insights blog, CV timelines and media materials.
           </p>
-
-          {/* Authorization Help Panel */}
-          <div className="bg-amber-50/70 border border-amber-100 p-3.5 mb-5 font-mono text-[10px] text-amber-900 leading-relaxed rounded-none">
-            <span className="font-bold block uppercase tracking-wider mb-1 text-editorial-gold flex items-center gap-1">
-              <ShieldAlert className="h-3.5 w-3.5" />
-              Demo Portal Access:
-            </span>
-            <div className="flex justify-between items-center bg-white/70 px-2 py-1 border border-amber-100/50 mt-1">
-              <span>Email: <code className="font-bold text-editorial-navy">admin@unimtech.edu.sl</code></span>
-            </div>
-            <div className="flex justify-between items-center bg-white/70 px-2 py-1 border border-amber-100/50 mt-1">
-              <span>Password: <code className="font-bold text-editorial-navy">sawaneh2026</code></span>
-            </div>
-          </div>
 
           {/* Login Error State */}
           {loginError && (
@@ -1065,6 +1058,7 @@ export default function CMSDashboard({
           { id: 'blog', name: 'Insights blog', count: blogPosts.length, icon: <FileText className="h-4 w-4" /> },
           { id: 'cv', name: 'CV Timeline', count: timelineItems.length, icon: <Briefcase className="h-4 w-4" /> },
           { id: 'talks', name: 'Speaking / Media', count: talkEvents.length, icon: <Presentation className="h-4 w-4" /> },
+          { id: 'messages', name: 'Inquiries & Collabs', count: activeModel === 'messages' ? messages.length : '?', icon: <Mail className="h-4 w-4" /> },
           { id: 'gallery', name: 'Visual Gallery', count: galleryImages.length, icon: <ImageIcon className="h-4 w-4" /> },
           { id: 'profile', name: 'Admin Profile', count: 2, icon: <User className="h-4 w-4" /> }
         ].map((model) => {
@@ -1166,6 +1160,9 @@ export default function CMSDashboard({
                         {activeModel === 'gallery' && `Category: ${item.category} | Order: ${item.order}`}
                         {activeModel === 'galleryCategories' && `ID: ${item.id}`}
                         {activeModel === 'profile' && `Dynamic Administrative Content`}
+                        {activeModel === 'messages' && (
+                          <span className={`inline-block px-1.5 py-0.5 rounded-none font-bold uppercase tracking-wider text-[8px] ml-2 ${item.status === 'Completed' ? 'bg-emerald-50 text-emerald-700' : item.status === 'In Progress' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>{item.status || 'Pending'}</span>
+                        )}
                       </p>
                       {item.id === editingId && (
                         <span className="inline-block text-[8px] font-mono bg-amber-150 text-amber-900 px-1.5 py-0.5 rounded-none font-bold uppercase tracking-wider animate-pulse border border-amber-200">
@@ -1406,7 +1403,57 @@ export default function CMSDashboard({
                   Configure Another
                 </button>
               </div>
-            ) : (
+            ) : activeModel === 'messages' ? (
+                <div>
+                  {selectedMessage ? (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center border-b border-editorial-border pb-2 mb-4">
+                        <div className="flex items-center gap-3">
+                          <h4 className="font-serif text-lg text-editorial-navy">{selectedMessage.type}</h4>
+                          <select
+                            value={selectedMessage.status || 'Pending'}
+                            onChange={async (e) => {
+                              const newStatus = e.target.value as 'Pending' | 'In Progress' | 'Completed';
+                              const updatedMsg = { ...selectedMessage, status: newStatus };
+                              try {
+                                await saveDocument('messages', updatedMsg.id, updatedMsg);
+                                setSelectedMessage(updatedMsg);
+                                setMessages(messages.map(m => m.id === updatedMsg.id ? updatedMsg : m));
+                              } catch (err) {
+                                console.error('Error updating status', err);
+                                alert('Failed to update status.');
+                              }
+                            }}
+                            className={`text-[10px] font-mono uppercase tracking-widest font-bold px-2 py-1 border rounded-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-editorial-navy ${
+                              selectedMessage.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                              selectedMessage.status === 'In Progress' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                              'bg-rose-50 text-rose-700 border-rose-200'
+                            }`}
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                          </select>
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-mono">{new Date(selectedMessage.date).toLocaleString()}</span>
+                      </div>
+                      <div className="bg-slate-50 p-4 border border-editorial-border text-sm text-slate-800 font-sans">
+                        <p><strong>Name/Org:</strong> {selectedMessage.name || selectedMessage.org || 'N/A'}</p>
+                        <p><strong>Email:</strong> {selectedMessage.email}</p>
+                        {selectedMessage.subject && <p><strong>Subject:</strong> {selectedMessage.subject}</p>}
+                        {selectedMessage.collabType && <p><strong>Collab Type:</strong> {selectedMessage.collabType}</p>}
+                      </div>
+                      <div className="mt-4 text-sm font-sans whitespace-pre-wrap text-slate-700">
+                        {selectedMessage.text || selectedMessage.proposal}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-slate-500 font-mono text-sm border-2 border-dashed border-slate-200">
+                      Select a message from the list to view details
+                    </div>
+                  )}
+                </div>
+              ) : (
               <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
                 {/* 1. PUBLICATIONS FORM FIELDS */}
                 {activeModel === 'publications' && (
@@ -2272,14 +2319,19 @@ export default function CMSDashboard({
 
                 <button
                   type="submit"
-                  className="w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none mt-4"
+                  disabled={isSaving}
+                  className={`w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none mt-4 ${isSaving ? 'opacity-70 cursor-not-allowed' : ''}`}
                 >
-                  <PlusCircle className="h-4 w-4 text-editorial-gold" />
-                  {activeModel === 'profile' 
+                  {isSaving ? (
+                    <RefreshCw className="h-4 w-4 animate-spin text-editorial-gold" />
+                  ) : (
+                    <PlusCircle className="h-4 w-4 text-editorial-gold" />
+                  )}
+                  {isSaving ? "Updating Live Registry..." : (activeModel === 'profile' 
                     ? "Update Academic Profile Module" 
                     : editingId 
                       ? "Update Registry Entry" 
-                      : "Publish To Repository"
+                      : "Publish To Repository")
                   }
                 </button>
               </form>

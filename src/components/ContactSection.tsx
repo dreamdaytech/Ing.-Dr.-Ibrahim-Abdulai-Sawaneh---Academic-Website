@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, Send, CheckCircle2, Award, Briefcase, GraduationCap, Compass, ExternalLink } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, Award, Briefcase, GraduationCap, Compass, ExternalLink, Loader2 } from 'lucide-react';
+import { saveDocument } from '../lib/firebase';
 import { HERO_INFO } from '../data/academicData';
 
-export default function ContactSection() {
+interface ContactSectionProps {
+  heroInfo?: typeof HERO_INFO;
+}
+
+export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionProps) {
   const [activeForm, setActiveForm] = useState<'message' | 'inquiry'>('message');
   
   // General message form state
@@ -12,6 +17,7 @@ export default function ContactSection() {
   const [msgSubject, setMsgSubject] = useState('');
   const [msgText, setMsgText] = useState('');
   const [msgSuccess, setMsgSuccess] = useState(false);
+  const [isSubmittingMsg, setIsSubmittingMsg] = useState(false);
 
   // Collaboration form state
   const [collabOrg, setCollabOrg] = useState('');
@@ -19,30 +25,88 @@ export default function ContactSection() {
   const [collabEmail, setCollabEmail] = useState('');
   const [collabProposal, setCollabProposal] = useState('');
   const [collabSuccess, setCollabSuccess] = useState(false);
+  const [isSubmittingCollab, setIsSubmittingCollab] = useState(false);
 
-  const handleMessageSubmit = (e: React.FormEvent) => {
+  const handleMessageSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!msgName || !msgEmail || !msgText) return;
-    setMsgSuccess(true);
-    setTimeout(() => {
-      setMsgSuccess(false);
-      setMsgName('');
-      setMsgEmail('');
-      setMsgSubject('');
-      setMsgText('');
-    }, 3500);
+    setIsSubmittingMsg(true);
+    try {
+      const newMsg = {
+        id: `msg-dynamic-${Date.now()}`,
+        type: 'General Inquiry',
+        name: msgName,
+        email: msgEmail,
+        subject: msgSubject,
+        text: msgText,
+        date: new Date().toISOString(),
+        status: 'Pending'
+      };
+      await saveDocument('messages', newMsg.id, newMsg);
+      setMsgSuccess(true);
+      setTimeout(() => {
+        setMsgSuccess(false);
+        setMsgName('');
+        setMsgEmail('');
+        setMsgSubject('');
+        setMsgText('');
+      }, 3500);
+    } catch (e) {
+      console.error(e);
+      alert("Error sending message.");
+    } finally {
+      setIsSubmittingMsg(false);
+    }
   };
 
-  const handleCollabSubmit = (e: React.FormEvent) => {
+  const handleCollabSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!collabEmail || !collabProposal) return;
-    setCollabSuccess(true);
-    setTimeout(() => {
-      setCollabSuccess(false);
-      setCollabOrg('');
-      setCollabEmail('');
-      setCollabProposal('');
-    }, 3500);
+    setIsSubmittingCollab(true);
+    try {
+      const newCollab = {
+        id: `collab-dynamic-${Date.now()}`,
+        type: 'Partnership Request',
+        org: collabOrg,
+        collabType: collabType,
+        email: collabEmail,
+        proposal: collabProposal,
+        date: new Date().toISOString(),
+        status: 'Pending'
+      };
+      await saveDocument('messages', newCollab.id, newCollab);
+      
+      // Send email notification
+      try {
+        await fetch('/api/notify-admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            type: newCollab.type,
+            email: newCollab.email,
+            org: newCollab.org,
+            proposal: newCollab.proposal
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to send notification email', err);
+      }
+
+      setCollabSuccess(true);
+      setTimeout(() => {
+        setCollabSuccess(false);
+        setCollabOrg('');
+        setCollabEmail('');
+        setCollabProposal('');
+      }, 3500);
+    } catch (e) {
+      console.error(e);
+      alert("Error sending proposal.");
+    } finally {
+      setIsSubmittingCollab(false);
+    }
   };
 
   return (
@@ -75,7 +139,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-widest">Office Location</span>
-                  <span className="block font-bold text-slate-800 leading-normal mt-0.5">{HERO_INFO.address}</span>
+                  <span className="block font-bold text-slate-800 leading-normal mt-0.5">{heroInfo.address}</span>
                 </div>
               </div>
 
@@ -86,7 +150,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-widest">Scholarly Email</span>
-                  <span className="block font-bold text-slate-800 leading-normal mt-0.5 select-all">{HERO_INFO.email}</span>
+                  <span className="block font-bold text-slate-800 leading-normal mt-0.5 select-all">{heroInfo.email}</span>
                 </div>
               </div>
 
@@ -97,7 +161,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-widest">Mobile Telephony</span>
-                  <span className="block font-bold text-slate-800 leading-normal mt-0.5 select-all">{HERO_INFO.phone}</span>
+                  <span className="block font-bold text-slate-800 leading-normal mt-0.5 select-all">{heroInfo.phone}</span>
                 </div>
               </div>
             </div>
@@ -206,10 +270,11 @@ export default function ContactSection() {
 
                     <button
                       type="submit"
-                      className="w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none"
+                      disabled={isSubmittingMsg}
+                      className={`w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none ${isSubmittingMsg ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                      <Send className="h-4 w-4 text-editorial-gold" />
-                      Dispatch Message
+                      {isSubmittingMsg ? <Loader2 className="h-4 w-4 text-editorial-gold animate-spin" /> : <Send className="h-4 w-4 text-editorial-gold" />}
+                      {isSubmittingMsg ? "Dispatching..." : "Dispatch Message"}
                     </button>
                   </form>
                 )}
@@ -284,10 +349,11 @@ export default function ContactSection() {
 
                     <button
                       type="submit"
-                      className="w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none"
+                      disabled={isSubmittingCollab}
+                      className={`w-full py-2.5 bg-editorial-navy hover:bg-editorial-navy/95 text-white font-bold text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 cursor-pointer rounded-none ${isSubmittingCollab ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                      <Send className="h-4 w-4 text-editorial-gold" />
-                      Submit Partnership Proposal
+                      {isSubmittingCollab ? <Loader2 className="h-4 w-4 text-editorial-gold animate-spin" /> : <Send className="h-4 w-4 text-editorial-gold" />}
+                      {isSubmittingCollab ? "Submitting..." : "Submit Partnership Proposal"}
                     </button>
                   </form>
                 )}

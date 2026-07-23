@@ -6,10 +6,18 @@ import { Book } from '../types';
 
 interface BooksSectionProps {
   books?: Book[];
+  initialSelectedBookId?: string | null;
 }
 
-export default function BooksSection({ books = BOOKS }: BooksSectionProps) {
+export default function BooksSection({ books = BOOKS, initialSelectedBookId }: BooksSectionProps) {
   const [selectedBookState, setSelectedBookState] = useState<Book | null>(null);
+
+  React.useEffect(() => {
+    if (initialSelectedBookId) {
+      const book = books.find(b => b.id === initialSelectedBookId);
+      if (book) setSelectedBookState(book);
+    }
+  }, [initialSelectedBookId, books]);
   const activeBookSelected = selectedBookState || books[0] || null;
   const [copiedIsbn, setCopiedIsbn] = useState<string | null>(null);
   const [isExportingExcerpt, setIsExportingExcerpt] = useState(false);

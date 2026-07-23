@@ -14,10 +14,8 @@ const app = initializeApp({
   appId: firebaseConfig.appId,
 });
 
-// Initialize firestore with the custom databaseId and force long polling to prevent iframe connection issues
-export const db = initializeFirestore(app, {
-  experimentalForceLongPolling: true,
-}, firebaseConfig.firestoreDatabaseId || '(default)');
+// Initialize firestore with the custom databaseId
+export const db = initializeFirestore(app, { experimentalForceLongPolling: true }, firebaseConfig.firestoreDatabaseId || '(default)');
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 

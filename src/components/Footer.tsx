@@ -18,7 +18,7 @@ const formatImgUrl = (url?: string | null) => {
   return url;
 };
 
-export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
+export default function Footer({ setActiveTab, heroInfo = HERO_INFO }: FooterProps) {
   const handleNavClick = (tabId: string) => {
     setActiveTab(tabId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -77,7 +77,7 @@ export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
             <ul className="space-y-2 text-xs font-semibold uppercase tracking-wider font-sans">
               <li>
                 <a 
-                  href={HERO_INFO.researchGate} 
+                  href={heroInfo?.researchGate} 
                   target="_blank" 
                   referrerPolicy="no-referrer"
                   className="hover:text-editorial-gold transition-colors inline-flex items-center gap-1.5"
@@ -88,7 +88,7 @@ export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
               </li>
               <li>
                 <a 
-                  href={HERO_INFO.orcid} 
+                  href={heroInfo?.orcid} 
                   target="_blank" 
                   referrerPolicy="no-referrer"
                   className="hover:text-editorial-gold transition-colors inline-flex items-center gap-1.5"
@@ -99,7 +99,7 @@ export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
               </li>
               <li>
                 <a 
-                  href={HERO_INFO.googleScholar} 
+                  href={heroInfo?.googleScholar} 
                   target="_blank" 
                   referrerPolicy="no-referrer"
                   className="hover:text-editorial-gold transition-colors inline-flex items-center gap-1.5"
@@ -110,7 +110,7 @@ export default function Footer({ setActiveTab, heroInfo = {} }: FooterProps) {
               </li>
               <li>
                 <a 
-                  href={HERO_INFO.linkedin} 
+                  href={heroInfo?.linkedin} 
                   target="_blank" 
                   referrerPolicy="no-referrer"
                   className="hover:text-editorial-gold transition-colors inline-flex items-center gap-1.5"

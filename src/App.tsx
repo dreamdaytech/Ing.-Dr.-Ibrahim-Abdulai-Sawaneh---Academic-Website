@@ -43,6 +43,7 @@ export default function App() {
 
   const [selectedPubId, setSelectedPubId] = useState<string | null>(null);
   const [selectedBlogPostId, setSelectedBlogPostId] = useState<string | null>(null);
+  const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
 
   const [isDbLoading, setIsDbLoading] = useState(true);
   const [isDbConnected, setIsDbConnected] = useState(false);
@@ -401,9 +402,9 @@ export default function App() {
           />
         );
       case 'books':
-        return <BooksSection books={dynamicBooks} />;
+        return <BooksSection books={dynamicBooks} initialSelectedBookId={selectedBookId} />;
       case 'cv':
-        return <CVSection timelineItems={dynamicTimelineItems} />;
+        return <CVSection timelineItems={dynamicTimelineItems} heroInfo={dynamicHeroInfo} />;
       case 'gallery':
         return <GallerySection galleryImages={dynamicGalleryImages} galleryCategories={dynamicGalleryCategories} />;
       case 'media':
@@ -442,7 +443,7 @@ export default function App() {
           />
         );
       case 'contact':
-        return <ContactSection />;
+        return <ContactSection heroInfo={dynamicHeroInfo} />;
       default:
         return renderHomeContent();
     }

@@ -83,3 +83,17 @@ export interface GalleryImage {
   category: string;
   order: number;
 }
+
+export interface Message {
+  id: string;
+  type: string;
+  name?: string;
+  email: string;
+  subject?: string;
+  text?: string;
+  org?: string;
+  collabType?: string;
+  proposal?: string;
+  date: string;
+  status?: 'Pending' | 'In Progress' | 'Completed';
+}

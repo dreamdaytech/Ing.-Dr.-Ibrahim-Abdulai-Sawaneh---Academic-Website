@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
+import nodemailer from 'nodemailer';
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -19,6 +20,42 @@ async function startServer() {
       headers: {
         'User-Agent': 'aistudio-build',
       }
+    }
+  });
+
+
+  app.post("/api/notify-admin", async (req, res) => {
+    try {
+      const { type, email, org, proposal } = req.body;
+      
+      // Use Ethereal Email for testing if no real credentials are provided
+      let testAccount = await nodemailer.createTestAccount();
+      
+      let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.SMTP_USER || testAccount.user, 
+          pass: process.env.SMTP_PASS || testAccount.pass, 
+        },
+      });
+
+      let info = await transporter.sendMail({
+        from: '"Academic Gateway System" <no-reply@academicgateway.local>',
+        to: "admin@academicgateway.local", // list of receivers
+        subject: `New ${type} Submitted`, // Subject line
+        text: `A new ${type} has been submitted.\n\nOrganization/Name: ${org}\nEmail: ${email}\nProposal: ${proposal}`, 
+        html: `<p>A new <b>${type}</b> has been submitted.</p><p><b>Organization/Name:</b> ${org}<br/><b>Email:</b> ${email}<br/><b>Proposal:</b> ${proposal}</p>`, 
+      });
+
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+      
+      res.json({ success: true, previewUrl: nodemailer.getTestMessageUrl(info) });
+    } catch (error: any) {
+      console.error("Error sending notification:", error);
+      res.status(500).json({ error: "Failed to send notification" });
     }
   });
 

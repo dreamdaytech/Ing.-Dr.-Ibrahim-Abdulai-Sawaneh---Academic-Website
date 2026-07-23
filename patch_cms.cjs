@@ -1,75 +1,30 @@
 const fs = require('fs');
-let code = fs.readFileSync('src/components/CMSDashboard.tsx', 'utf8');
+let c = fs.readFileSync('src/components/CMSDashboard.tsx', 'utf8');
 
-// 1. Add states
-const stateTarget = "const [profileAddress, setProfileAddress] = useState(heroInfo?.address || '');";
-const stateReplacement = stateTarget + "\n  const [profileLogoUrl, setProfileLogoUrl] = useState(heroInfo?.logoUrl || '');\n  const [profileHeroUrl, setProfileHeroUrl] = useState(heroInfo?.heroUrl || '');\n  const [isUploadingImg, setIsUploadingImg] = useState(false);";
-code = code.replace(stateTarget, stateReplacement);
+c = c.replace(
+  "Trash2, BookOpen,",
+  "Trash2, BookOpen, Mail,"
+);
 
-// 2. Add to useEffect
-const effectTarget = "setProfileAddress(heroInfo.address || '');";
-const effectReplacement = effectTarget + "\n      setProfileLogoUrl(heroInfo.logoUrl || '');\n      setProfileHeroUrl(heroInfo.heroUrl || '');";
-code = code.replace(effectTarget, effectReplacement);
+c = c.replace(
+  "GalleryImage, GalleryCategory } from '../types';",
+  "GalleryImage, GalleryCategory, Message } from '../types';"
+);
 
-// 3. Add to save logic
-const saveTarget = "address: profileAddress\n          };";
-const saveReplacement = "address: profileAddress,\n            logoUrl: profileLogoUrl,\n            heroUrl: profileHeroUrl\n          };";
-code = code.replace(saveTarget, saveReplacement);
+c = c.replace(
+  "import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile } from '../lib/firebase';",
+  "import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile, fetchCollection } from '../lib/firebase';"
+);
 
-// 4. Add UI fields
-const uiTarget = "{/* Hero Fields */}\n                      <div>\n                        <label";
-const uiReplacement = `{/* Hero Fields */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Logo Image URL</label>
-                          <input
-                            type="text"
-                            value={profileLogoUrl}
-                            onChange={(e) => setProfileLogoUrl(e.target.value)}
-                            placeholder="https://... or /logo.png"
-                            className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none mb-2"
-                          />
-                          <input type="file" accept="image/*" onChange={async (e) => {
-                            if (e.target.files && e.target.files[0]) {
-                              setIsUploadingImg(true);
-                              try {
-                                const url = await uploadFile(e.target.files[0], 'site/logo_' + Date.now());
-                                setProfileLogoUrl(url);
-                              } catch(err) {
-                                alert("Failed to upload image. Storage rules might need to be configured.");
-                              } finally {
-                                setIsUploadingImg(false);
-                              }
-                            }
-                          }} className="text-xs" disabled={isUploadingImg} />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Hero Image URL</label>
-                          <input
-                            type="text"
-                            value={profileHeroUrl}
-                            onChange={(e) => setProfileHeroUrl(e.target.value)}
-                            placeholder="https://... or /hero.jpg"
-                            className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none mb-2"
-                          />
-                          <input type="file" accept="image/*" onChange={async (e) => {
-                            if (e.target.files && e.target.files[0]) {
-                              setIsUploadingImg(true);
-                              try {
-                                const url = await uploadFile(e.target.files[0], 'site/hero_' + Date.now());
-                                setProfileHeroUrl(url);
-                              } catch(err) {
-                                alert("Failed to upload image. Storage rules might need to be configured.");
-                              } finally {
-                                setIsUploadingImg(false);
-                              }
-                            }
-                          }} className="text-xs" disabled={isUploadingImg} />
-                        </div>
-                      </div>
-                      <div>
-                        <label`;
-code = code.replace(uiTarget, uiReplacement);
+c = c.replace(
+  "  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery' | 'galleryCategories'>('publications');",
+  "  const [activeModel, setActiveModel] = useState<'publications' | 'books' | 'blog' | 'cv' | 'talks' | 'profile' | 'gallery' | 'galleryCategories' | 'messages'>('publications');\n  const [messages, setMessages] = useState<Message[]>([]);\n  const [isLoadingMessages, setIsLoadingMessages] = useState(false);\n  useEffect(() => {\n    if (activeModel === 'messages') {\n      setIsLoadingMessages(true);\n      fetchCollection<Message>('messages').then(msgs => {\n        setMessages(msgs.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));\n      }).catch(console.error).finally(() => setIsLoadingMessages(false));\n    }\n  }, [activeModel]);"
+);
 
-fs.writeFileSync('src/components/CMSDashboard.tsx', code, 'utf8');
-console.log('Patched CMSDashboard');
+c = c.replace(
+  "{ id: 'talks', name: 'Speaking / Media', count: talkEvents.length, icon: <Presentation className=\"h-4 w-4\" /> },",
+  "{ id: 'talks', name: 'Speaking / Media', count: talkEvents.length, icon: <Presentation className=\"h-4 w-4\" /> },\n          { id: 'messages', name: 'Inquiries & Collabs', count: activeModel === 'messages' ? messages.length : '?', icon: <Mail className=\"h-4 w-4\" /> },"
+);
+
+
+fs.writeFileSync('src/components/CMSDashboard.tsx', c);

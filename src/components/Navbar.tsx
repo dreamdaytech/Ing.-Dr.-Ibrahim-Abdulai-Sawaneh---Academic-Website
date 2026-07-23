@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import logoImg from '../assets/logo.png';
 import { Menu, X, ChevronDown, Search, BookOpen, FileText } from 'lucide-react';
-import { Publication, BlogPost } from '../types';
+import { Publication, BlogPost, Book } from '../types';
 
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   publications?: Publication[];
   blogPosts?: BlogPost[];
+  books?: Book[];
   onSelectPublication?: (id: string | null) => void;
   onSelectBlogPost?: (id: string | null) => void;
+  onSelectBook?: (id: string | null) => void;
   heroInfo?: any;
 }
 
@@ -40,8 +42,10 @@ export default function Navbar({
   setActiveTab,
   publications = [],
   blogPosts = [],
+  books = [],
   onSelectPublication,
   onSelectBlogPost,
+  onSelectBook,
   heroInfo = {}
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +70,7 @@ export default function Navbar({
   }, []);
 
   const searchResults = (() => {
-    if (!searchQuery.trim()) return { publications: [], blogPosts: [] };
+    if (!searchQuery.trim()) return { publications: [], blogPosts: [], books: [] };
     const q = searchQuery.toLowerCase().trim();
     
     const matchedPubs = publications.filter(pub => 
@@ -81,11 +85,17 @@ export default function Navbar({
       post.excerpt.toLowerCase().includes(q) ||
       post.content.toLowerCase().includes(q)
     ).slice(0, 5);
+    
+    const matchedBooks = books.filter(book => 
+      book.title.toLowerCase().includes(q) ||
+      book.synopsis.toLowerCase().includes(q) ||
+      book.publisher.toLowerCase().includes(q)
+    ).slice(0, 5);
 
-    return { publications: matchedPubs, blogPosts: matchedBlogs };
+    return { publications: matchedPubs, blogPosts: matchedBlogs, books: matchedBooks };
   })();
 
-  const hasResults = searchResults.publications.length > 0 || searchResults.blogPosts.length > 0;
+  const hasResults = searchResults.publications.length > 0 || searchResults.blogPosts.length > 0 || searchResults.books.length > 0;
 
   const navItems: NavItem[] = [
     { id: 'home', label: 'Home' },
@@ -218,7 +228,7 @@ export default function Navbar({
             </div>
             <input
               type="text"
-              placeholder="Search publications & blog..."
+              placeholder="Search publications, blog & books..."
               value={searchQuery}
               onFocus={() => setIsSearchFocused(true)}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -253,6 +263,37 @@ export default function Navbar({
                                 </span>
                                 <span className="block text-[9px] text-slate-400 font-sans mt-0.5 leading-none">
                                   {pub.authors} ({pub.year})
+                                </span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {searchResults.books.length > 0 && (
+                      <div>
+                        <div className="px-3 pb-1.5 mb-1.5 border-b border-editorial-border-light">
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400">Published Books ({searchResults.books.length})</span>
+                        </div>
+                        <div className="space-y-1">
+                          {searchResults.books.map((book) => (
+                            <button
+                              key={book.id}
+                              onClick={() => {
+                                onSelectBook?.(book.id);
+                                setSearchQuery('');
+                                setIsSearchFocused(false);
+                              }}
+                              className="w-full text-left px-3 py-1.5 hover:bg-slate-50 transition-colors flex gap-2.5 items-start border-l-2 border-transparent hover:border-editorial-gold cursor-pointer"
+                            >
+                              <BookOpen className="h-3.5 w-3.5 text-editorial-gold shrink-0 mt-0.5" />
+                              <div className="min-w-0 flex-1">
+                                <span className="block font-serif text-[11px] font-bold text-editorial-navy leading-snug hover:text-editorial-gold truncate">
+                                  {book.title}
+                                </span>
+                                <span className="block text-[9px] text-slate-400 font-sans mt-0.5 leading-none">
+                                  {book.publisher} • {book.year}
                                 </span>
                               </div>
                             </button>
@@ -339,7 +380,7 @@ export default function Navbar({
                 </div>
                 <input
                   type="text"
-                  placeholder="Search publications & blog posts..."
+                  placeholder="Search publications, blog & books..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-50 border border-editorial-border py-2 pl-10 pr-3 text-xs font-sans text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-editorial-navy transition-all"
@@ -370,6 +411,32 @@ export default function Navbar({
                               <div className="min-w-0 flex-1">
                                 <span className="block font-serif text-xs font-bold text-editorial-navy leading-tight truncate">
                                   {pub.title}
+                                </span>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {searchResults.books.length > 0 && (
+                        <div className="py-1">
+                          <div className="px-2 pb-1">
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400">Books ({searchResults.books.length})</span>
+                          </div>
+                          {searchResults.books.map((book) => (
+                            <button
+                              key={book.id}
+                              onClick={() => {
+                                onSelectBook?.(book.id);
+                                setSearchQuery('');
+                                setIsOpen(false);
+                              }}
+                              className="w-full text-left px-2 py-1.5 hover:bg-slate-50 transition-colors flex gap-2 items-start cursor-pointer"
+                            >
+                              <BookOpen className="h-3.5 w-3.5 text-editorial-gold shrink-0 mt-0.5" />
+                              <div className="min-w-0 flex-1">
+                                <span className="block font-serif text-xs font-bold text-editorial-navy leading-tight truncate">
+                                  {book.title}
                                 </span>
                               </div>
                             </button>
