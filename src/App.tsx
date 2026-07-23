@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { FileText, BookOpen, ChevronRight, Award, GraduationCap, ArrowRight, ShieldCheck, Mail, Database, Sparkles, Cloud, Wifi, Sun, Moon } from 'lucide-react';
 
 // Data imports
@@ -112,6 +112,13 @@ export default function App() {
     }
     loadDataFromFirestore();
   }, []);
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   const pageTransition = {
     initial: { opacity: 0, y: 20 },
@@ -436,7 +443,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFDFB] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FDFDFB] flex flex-col font-sans relative">
+      {/* Reading Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-editorial-gold z-[100] origin-left"
+        style={{ scaleX }}
+      />
       {/* Dynamic top bar */}
       <div className="bg-editorial-navy text-white py-2 px-4 text-center text-[10px] font-bold font-mono tracking-widest uppercase no-print border-b border-editorial-gold flex flex-col sm:flex-row items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 justify-center sm:justify-start">

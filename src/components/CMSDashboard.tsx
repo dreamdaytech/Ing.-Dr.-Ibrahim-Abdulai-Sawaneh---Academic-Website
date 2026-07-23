@@ -322,7 +322,7 @@ export default function CMSDashboard({
         throw new Error('Offline fallback mode active. To update live credentials, please authorize with a connection to the Firestore live database.');
       }
 
-      const emailVal = user.email || 'admin@iamtech.edu.sl';
+      const emailVal = user.email || 'admin@unimtech.edu.sl';
 
       // 1. Reauthenticate first to avoid requires-recent-login
       const credential = EmailAuthProvider.credential(emailVal, currentPasswordForChange);
@@ -397,7 +397,7 @@ export default function CMSDashboard({
     { name: "cv_dr_sawaneh_full_dossier.pdf", size: "2.4 MB", type: "PDF / Curriculum", downloads: 1420 },
     { name: "disaster_policy_reduction_mediation_2025.pdf", size: "4.8 MB", type: "PDF / pre-print", downloads: 820 },
     { name: "role_of_cyber_security_postwar_sample.pdf", size: "1.6 MB", type: "PDF / book excerpt", downloads: 1250 },
-    { name: "student_dissertation_dbms_iamtech_case.pdf", size: "3.2 MB", type: "PDF / pre-print", downloads: 640 }
+    { name: "student_dissertation_dbms_unimtech_case.pdf", size: "3.2 MB", type: "PDF / pre-print", downloads: 640 }
   ];
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -412,7 +412,7 @@ export default function CMSDashboard({
 
     // Automatically expand 'admin' shorthand to valid email format for Firebase Auth
     if (cleanEmail === 'admin') {
-      cleanEmail = 'admin@iamtech.edu.sl';
+      cleanEmail = 'admin@unimtech.edu.sl';
     }
 
     setIsLoggingIn(true);
@@ -426,8 +426,8 @@ export default function CMSDashboard({
 
       // 2. Self-provisioning behavior: If first time, automatically register admin credentials
       if (
-        (cleanEmail === 'admin@iamtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
-        (cleanEmail === 'admin@iamtech.edu.sl' && cleanPassword === 'admin')
+        (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
+        (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'admin')
       ) {
         try {
           await createUserWithEmailAndPassword(auth, cleanEmail, cleanPassword);
@@ -450,8 +450,8 @@ export default function CMSDashboard({
       } else {
         // Safe local authentication fallback in case client is offline or Auth domain blocked
         if (
-          (cleanEmail === 'admin@iamtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
-          (cleanEmail === 'admin@iamtech.edu.sl' && cleanPassword === 'admin')
+          (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'sawaneh2026') ||
+          (cleanEmail === 'admin@unimtech.edu.sl' && cleanPassword === 'admin')
         ) {
           setIsLoggedIn(true);
           sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
@@ -649,7 +649,7 @@ export default function CMSDashboard({
           title,
           subtitle: subtitle || undefined,
           year: parseInt(year) || 2026,
-          publisher: publisher || "IAMTECH Publishing",
+          publisher: publisher || "UNIMTECH Publishing",
           isbn: isbn || undefined,
           coverColor: "from-slate-900 to-slate-850",
           synopsis,
@@ -853,7 +853,7 @@ export default function CMSDashboard({
               Demo Portal Access:
             </span>
             <div className="flex justify-between items-center bg-white/70 px-2 py-1 border border-amber-100/50 mt-1">
-              <span>Email: <code className="font-bold text-editorial-navy">admin@iamtech.edu.sl</code></span>
+              <span>Email: <code className="font-bold text-editorial-navy">admin@unimtech.edu.sl</code></span>
             </div>
             <div className="flex justify-between items-center bg-white/70 px-2 py-1 border border-amber-100/50 mt-1">
               <span>Password: <code className="font-bold text-editorial-navy">sawaneh2026</code></span>
@@ -879,7 +879,7 @@ export default function CMSDashboard({
                 <input
                   type="text"
                   required
-                  placeholder="admin@iamtech.edu.sl"
+                  placeholder="admin@unimtech.edu.sl"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-9 pr-3 py-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none text-slate-800"
@@ -965,7 +965,7 @@ export default function CMSDashboard({
         <div className="flex items-center justify-center md:justify-end gap-3 shrink-0 font-sans">
           <div className="text-right hidden sm:block font-mono text-[10px]">
             <span className="block text-slate-400 uppercase tracking-widest font-bold">Authorized Session</span>
-            <span className="text-emerald-600 font-bold">admin@iamtech.edu.sl</span>
+            <span className="text-emerald-600 font-bold">admin@unimtech.edu.sl</span>
           </div>
           <button
             onClick={() => {
@@ -1411,7 +1411,7 @@ export default function CMSDashboard({
                       <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Keywords (Comma separated)</label>
                       <input
                         type="text"
-                        placeholder="e.g. Cybercrime, IAMTECH, Policy"
+                        placeholder="e.g. Cybercrime, UNIMTECH, Policy"
                         value={keywords}
                         onChange={(e) => setKeywords(e.target.value)}
                         className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"
@@ -1464,7 +1464,7 @@ export default function CMSDashboard({
                         <input
                           type="text"
                           required
-                          placeholder="e.g. IAMTECH Press"
+                          placeholder="e.g. UNIMTECH Press"
                           value={publisher}
                           onChange={(e) => setPublisher(e.target.value)}
                           className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"
@@ -1682,7 +1682,7 @@ export default function CMSDashboard({
                       <input
                         type="text"
                         required
-                        placeholder="e.g. IAMTECH / University of Sierra Leone"
+                        placeholder="e.g. UNIMTECH / University of Sierra Leone"
                         value={institution}
                         onChange={(e) => setInstitution(e.target.value)}
                         className="w-full p-2.5 border border-editorial-border bg-[#FBFBF9] focus:outline-none focus:ring-1 focus:ring-editorial-navy rounded-none"

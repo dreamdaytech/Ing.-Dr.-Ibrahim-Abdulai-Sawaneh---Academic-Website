@@ -18,14 +18,14 @@ export const HERO_INFO = {
   linkedin: "https://linkedin.com/in/ibrahim-abdulai-sawaneh",
   email: "i.sawaneh@institution.edu.sl",
   phone: "+232 (76) 000-000",
-  address: "Department of Information Systems, Institute of Advanced Management and Technology (IAMTECH), Freetown, Sierra Leone"
+  address: "Department of Information Systems, University of Management and Technology (UNIMTECH), Freetown, Sierra Leone"
 };
 
 export const BIOGRAPHY_DETAILS = {
   introduction: "Ing. Dr. Ibrahim Abdulai Sawaneh is a distinguished academic, professional engineer, and higher education visionary whose career intersects advanced computational systems, risk management, and organizational leadership. He serves as a critical voice in the digitalization and developmental policy framework of West Africa.",
   longForm: [
     "Ing. Dr. Ibrahim Abdulai Sawaneh has spent over two decades fostering academic excellence, technical innovation, and institutional capacity building. As a registered Professional Engineer and highly cited researcher, his multidimensional research programs address some of the most critical challenges facing developing nations: cyber vulnerability, disaster resilience, public security systems, and educational accessibility.",
-    "His academic journey is characterized by a commitment to bridging the gap between theoretical computer science and practical societal applications. He has held senior academic appointments and leadership roles in premier institutions—including the Institute of Advanced Management and Technology (IAMTECH) in Sierra Leone—where he has pioneered the implementation of advanced database management tools, integrated academic information portals, and spearheaded institutional curriculum reforms aligned with global standards.",
+    "His academic journey is characterized by a commitment to bridging the gap between theoretical computer science and practical societal applications. He has held senior academic appointments and leadership roles in premier institutions—including the University of Management and Technology (UNIMTECH) in Sierra Leone—where he has pioneered the implementation of advanced database management tools, integrated academic information portals, and spearheaded institutional curriculum reforms aligned with global standards.",
     "Dr. Sawaneh’s research on cybersecurity in post-war societies and disaster mitigation frameworks has influenced national policy dialogues. He is an advocate for utilizing Internet of Things (IoT) sensors, cloud computing, and machine learning to build resilient, smart infrastructure in African urban spaces. As an author, his textbooks and research monographs are designed to equip the next generation of African computer scientists, engineers, and public administrators with localized, context-driven knowledge.",
     "Through active mentorship of graduate students, collaboration with international developmental partners, and rigorous academic publishing, Dr. Sawaneh continues to contribute to the robust scientific database of Africa. He stands as a champion for the 'Digital Sierra Leone' agenda, believing that sustainable development is intrinsically tied to home-grown cyber-governance and pedagogical innovation."
   ],
@@ -106,17 +106,17 @@ export const PUBLICATIONS: Publication[] = [
     link: "https://example.org/pub/cybercrime-sl"
   },
   {
-    id: "pub-iamtech-db",
-    title: "Student Dissertation Database Management System: IAMTECH Sierra Leone as a Case Study",
+    id: "pub-unimtech-db",
+    title: "Student Dissertation Database Management System: UNIMTECH Sierra Leone as a Case Study",
     authors: "Sawaneh, I. A., Conteh, M., & Bangura, A. B.",
     year: 2023,
     journal: "International Journal of Information and Education Technology",
     publisher: "IJIET Org",
-    abstract: "Academic institutions in developing regions frequently struggle with paper-based thesis archiving, resulting in lost institutional knowledge and plagiarism vulnerabilities. This paper describes the development and deployment of a secure, lightweight, web-based Dissertation Database Management System at the Institute of Advanced Management and Technology (IAMTECH). The system utilizes MySQL, PHP, and dual-layer indexing, improving retrieval times by 94% and establishing an automated duplicate-detection module.",
-    keywords: ["Dissertation Database", "DBMS", "IAMTECH", "Higher Education", "Plagiarism Prevention", "Sierra Leone"],
+    abstract: "Academic institutions in developing regions frequently struggle with paper-based thesis archiving, resulting in lost institutional knowledge and plagiarism vulnerabilities. This paper describes the development and deployment of a secure, lightweight, web-based Dissertation Database Management System at the University of Management and Technology (UNIMTECH). The system utilizes MySQL, PHP, and dual-layer indexing, improving retrieval times by 94% and establishing an automated duplicate-detection module.",
+    keywords: ["Dissertation Database", "DBMS", "UNIMTECH", "Higher Education", "Plagiarism Prevention", "Sierra Leone"],
     category: "journal-article",
     doi: "10.18178/ijiet.2023.13.4.1852",
-    link: "https://example.org/pub/iamtech-dbms"
+    link: "https://example.org/pub/unimtech-dbms"
   },
   {
     id: "pub-elearning-post-pandemic",
@@ -239,7 +239,7 @@ export const TIMELINE_EXPERIENCE: TimelineItem[] = [
     year: "2020 - Present",
     title: "Senior Lecturer & Research Lead",
     subtitle: "Dept. of Information Systems & Computing",
-    institution: "Institute of Advanced Management and Technology (IAMTECH), Freetown",
+    institution: "University of Management and Technology (UNIMTECH), Freetown",
     category: "appointment",
     description: "Heading senior research programs in technology acceptance, databases, and network administration. Designing localized curricula and training undergraduate and graduate students in engineering research methodologies."
   },
@@ -257,7 +257,7 @@ export const TIMELINE_EXPERIENCE: TimelineItem[] = [
     year: "2022 - Present",
     title: "Chairman, Academic Senate Curriculum Committee",
     subtitle: "Institutional Leadership & Governance Role",
-    institution: "IAMTECH Senate",
+    institution: "UNIMTECH Senate",
     category: "leadership",
     description: "Spearheaded the complete transition of classical computational curricula to high-impact STEM systems, implementing active coding pathways, database engineering modules, and internship matching programs."
   },
@@ -350,7 +350,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "June 12, 2025",
     readTime: "6 min read",
     excerpt: "Every year, thousands of brilliant, localized dissertations are filed in damp archives, forgotten and prone to decay. It is time for digital, open-access institutional repositories.",
-    content: "When physical theses remain locked in administrative filing cabinets, society loses precious knowledge. African researchers end up replicating identical studies because prior research is invisible. In this article, I discuss the success of our lightweight dissertation DBMS at IAMTECH, exploring how simple indexation and online publishing can boost citations and secure academic integrity. Modern universities must treat web-accessible databases as core infrastructure.",
+    content: "When physical theses remain locked in administrative filing cabinets, society loses precious knowledge. African researchers end up replicating identical studies because prior research is invisible. In this article, I discuss the success of our lightweight dissertation DBMS at UNIMTECH, exploring how simple indexation and online publishing can boost citations and secure academic integrity. Modern universities must treat web-accessible databases as core infrastructure.",
     imageColor: "from-blue-900 to-indigo-950",
     author: "Ing. Dr. Ibrahim Abdulai Sawaneh"
   },

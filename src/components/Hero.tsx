@@ -143,7 +143,7 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
                     </div>
                     <div>
                       <span className="block text-[9px] font-mono text-slate-400 uppercase leading-none">Primary Affiliation</span>
-                      <span className="font-bold text-slate-800 block mt-1">IAMTECH Sierra Leone</span>
+                      <span className="font-bold text-slate-800 block mt-1">UNIMTECH Sierra Leone</span>
                     </div>
                   </div>
 

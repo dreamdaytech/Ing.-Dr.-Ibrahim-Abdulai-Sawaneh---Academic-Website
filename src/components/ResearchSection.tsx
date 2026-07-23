@@ -245,7 +245,7 @@ export default function ResearchSection({
           </div>
 
           <div class="excerpt-warning">
-            Sovereign Scientific Record — Department of Information Systems, IAMTECH © ${pub.year}
+            Sovereign Scientific Record — Department of Information Systems, UNIMTECH © ${pub.year}
           </div>
         </body>
         </html>

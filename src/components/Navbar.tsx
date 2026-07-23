@@ -110,8 +110,8 @@ export default function Navbar({
         <div className="flex h-18 items-center justify-between">
           {/* Logo / Scholar Name */}
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center bg-editorial-navy text-white font-serif italic text-xl select-none">
-              S
+            <div className="flex h-8 w-8 items-center justify-center bg-editorial-navy text-white font-serif italic text-sm font-bold tracking-tight select-none">
+              IAS
             </div>
             <div>
               <span 

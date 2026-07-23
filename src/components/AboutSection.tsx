@@ -26,7 +26,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
     { label: "Aesthetic Titles", value: heroInfo.tagline },
     { label: "Nationality", value: "Sierra Leonean" },
     { label: "Key Specializations", value: "ICT Systems, Cybersecurity, Risk Assessment, E-Learning Pedagogy" },
-    { label: "Current Affiliation", value: heroInfo.address?.includes("IAMTECH") ? "Dept. of Information Systems & Computing, IAMTECH" : heroInfo.address },
+    { label: "Current Affiliation", value: heroInfo.address?.includes("UNIMTECH") ? "Dept. of Information Systems & Computing, UNIMTECH" : heroInfo.address },
     { label: "Leadership Roles", value: "Chairman of Academic Senate Curriculum Committee, Professional Engineering Board Consultant" },
     { label: "Research Focus", value: "Digital Transformation, Disaster Reduction Policy, Post-War Cyber Governance" }
   ];
