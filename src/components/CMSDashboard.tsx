@@ -457,7 +457,7 @@ export default function CMSDashboard({
           sessionStorage.setItem('sawaneh_cms_isLoggedIn', 'true');
           sessionStorage.setItem('sawaneh_cms_login_type', 'local');
         } else {
-          setLoginError(err.message || 'Authentication error. Please try again.');
+          if (err.code === 'auth/operation-not-allowed') setLoginError('Email/Password authentication is not enabled. Please enable it in the Firebase Console under Authentication -> Sign-in method.'); else setLoginError(err.message || 'Authentication error. Please try again.');
         }
       }
     } finally {
