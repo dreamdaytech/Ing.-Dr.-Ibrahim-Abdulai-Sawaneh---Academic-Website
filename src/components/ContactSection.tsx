@@ -27,9 +27,36 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
   const [collabSuccess, setCollabSuccess] = useState(false);
   const [isSubmittingCollab, setIsSubmittingCollab] = useState(false);
 
+  // Security challenge state
+  const [num1, setNum1] = useState(0);
+  const [num2, setNum2] = useState(0);
+  const [msgSecurity, setMsgSecurity] = useState('');
+  const [collabSecurity, setCollabSecurity] = useState('');
+  const [msgSecurityError, setMsgSecurityError] = useState('');
+  const [collabSecurityError, setCollabSecurityError] = useState('');
+
+  React.useEffect(() => {
+    generateChallenge();
+  }, [activeForm]);
+
+  const generateChallenge = () => {
+    setNum1(Math.floor(Math.random() * 10) + 1);
+    setNum2(Math.floor(Math.random() * 10) + 1);
+    setMsgSecurity('');
+    setCollabSecurity('');
+    setMsgSecurityError('');
+    setCollabSecurityError('');
+  };
+
   const handleMessageSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!msgName || !msgEmail || !msgText) return;
+    if (parseInt(msgSecurity) !== num1 + num2) {
+      setMsgSecurityError("Security challenge failed. Please check your math.");
+      generateChallenge();
+      return;
+    }
+    setMsgSecurityError('');
     setIsSubmittingMsg(true);
     try {
       const newMsg = {
@@ -50,6 +77,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
         setMsgEmail('');
         setMsgSubject('');
         setMsgText('');
+        generateChallenge();
       }, 3500);
     } catch (e) {
       console.error(e);
@@ -62,6 +90,12 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
   const handleCollabSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!collabEmail || !collabProposal) return;
+    if (parseInt(collabSecurity) !== num1 + num2) {
+      setCollabSecurityError("Security challenge failed. Please check your math.");
+      generateChallenge();
+      return;
+    }
+    setCollabSecurityError('');
     setIsSubmittingCollab(true);
     try {
       const newCollab = {
@@ -100,6 +134,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
         setCollabOrg('');
         setCollabEmail('');
         setCollabProposal('');
+        generateChallenge();
       }, 3500);
     } catch (e) {
       console.error(e);
@@ -268,6 +303,19 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                       />
                     </div>
 
+                    <div className="pt-2 border-t border-editorial-border-light">
+                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Security Question: What is {num1} + {num2}? *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Enter the sum"
+                        value={msgSecurity}
+                        onChange={(e) => setMsgSecurity(e.target.value)}
+                        className="w-full p-2.5 border border-editorial-border rounded-none focus:outline-none focus:ring-1 focus:ring-editorial-navy bg-[#FBFBF9]"
+                      />
+                      {msgSecurityError && <p className="text-red-500 text-xs mt-1">{msgSecurityError}</p>}
+                    </div>
+
                     <button
                       type="submit"
                       disabled={isSubmittingMsg}
@@ -345,6 +393,19 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                         onChange={(e) => setCollabProposal(e.target.value)}
                         className="w-full p-2.5 border border-editorial-border rounded-none focus:outline-none focus:ring-1 focus:ring-editorial-navy bg-[#FBFBF9] resize-none leading-relaxed"
                       />
+                    </div>
+
+                    <div className="pt-2 border-t border-editorial-border-light">
+                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1 font-bold">Security Question: What is {num1} + {num2}? *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Enter the sum"
+                        value={collabSecurity}
+                        onChange={(e) => setCollabSecurity(e.target.value)}
+                        className="w-full p-2.5 border border-editorial-border rounded-none focus:outline-none focus:ring-1 focus:ring-editorial-navy bg-[#FBFBF9]"
+                      />
+                      {collabSecurityError && <p className="text-red-500 text-xs mt-1">{collabSecurityError}</p>}
                     </div>
 
                     <button

@@ -29,6 +29,12 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
+
+const stripHtml = (html: string) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [dynamicPubs, setDynamicPubs] = useState<Publication[]>(PUBLICATIONS);
@@ -145,12 +151,12 @@ export default function App() {
             <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl">
               About {dynamicHeroInfo.titles && dynamicHeroInfo.titles.length > 1 ? dynamicHeroInfo.titles.slice(0, 2).join(' ') : 'Ing. Dr.'} {dynamicHeroInfo.name ? dynamicHeroInfo.name.split(' ').slice(0, 2).join(' ') : 'Ibrahim A.'} Sawaneh
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed font-sans">
-              {dynamicBiographyDetails.longForm && dynamicBiographyDetails.longForm[0] ? dynamicBiographyDetails.longForm[0] : BIOGRAPHY_DETAILS.longForm[0]}
-            </p>
-            <p className="text-base text-slate-600 leading-relaxed font-sans">
-              {dynamicBiographyDetails.longForm && dynamicBiographyDetails.longForm[1] ? dynamicBiographyDetails.longForm[1] : BIOGRAPHY_DETAILS.longForm[1]}
-            </p>
+            <div 
+              className="text-base text-slate-600 leading-relaxed font-sans text-justify prose prose-sm max-w-none prose-p:mb-4 line-clamp-6"
+              dangerouslySetInnerHTML={{ 
+                __html: (dynamicBiographyDetails.longForm ? dynamicBiographyDetails.longForm.join(' ') : BIOGRAPHY_DETAILS.longForm.join(' ')).replace(/&nbsp;/g, ' ') 
+              }}
+            />
             <button
               onClick={() => { setActiveTab('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
               className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-editorial-navy hover:text-editorial-gold transition-colors cursor-pointer group"

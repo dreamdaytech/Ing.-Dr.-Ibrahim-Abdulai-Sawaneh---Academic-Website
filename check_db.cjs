@@ -1,17 +1,8 @@
-const { initializeApp } = require('firebase/app');
-const { getFirestore, doc, getDoc } = require('firebase/firestore');
-const firebaseConfig = require('./firebase-applet-config.json');
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
-
-async function check() {
-  const docRef = doc(db, 'profile', 'hero');
-  const snap = await getDoc(docRef);
-  if(snap.exists()) {
-    console.log("Profile from db:", snap.data());
-  } else {
-    console.log("No profile hero doc");
-  }
-}
-check();
+const admin = require('firebase-admin');
+const serviceAccount = require('./firebase-applet-config.json');
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+const db = admin.firestore();
+db.collection('profile').doc('biography').get().then(doc => {
+  console.log(JSON.stringify(doc.data(), null, 2));
+  process.exit(0);
+});

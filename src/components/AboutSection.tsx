@@ -8,6 +8,12 @@ interface AboutSectionProps {
   heroInfo?: typeof HERO_INFO;
 }
 
+
+const stripHtml = (html: string) => {
+  if (!html) return '';
+  return html.replace(/<[^>]*>?/gm, '');
+};
+
 export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, heroInfo = HERO_INFO }: AboutSectionProps) {
   const renderIcon = (name: string) => {
     switch (name) {
@@ -54,13 +60,10 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
             <p className="text-lg leading-relaxed text-slate-800 font-serif italic mb-6">
               {biographyDetails.introduction}
             </p>
-            {biographyDetails.longForm.map((paragraph, index) => (
-              <div 
-                key={index} 
-                className="text-base leading-relaxed text-slate-600 mb-5 font-sans prose prose-sm sm:prose-base max-w-none prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold"
-                dangerouslySetInnerHTML={{ __html: paragraph }}
-              />
-            ))}
+            <div 
+              className="text-base leading-relaxed text-slate-600 mb-5 font-sans text-justify prose prose-sm sm:prose-base max-w-none prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold prose-p:mb-5"
+              dangerouslySetInnerHTML={{ __html: biographyDetails.longForm.join(' ').replace(/&nbsp;/g, ' ') }}
+            />
           </section>
 
           {/* Vision and Mission Blocks */}
@@ -73,7 +76,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <Eye className="h-5 w-5" />
               </div>
               <h4 className="font-serif text-lg font-bold text-editorial-navy mb-2">Academic Vision</h4>
-              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.vision }} />
+              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.vision.replace(/&nbsp;/g, ' ') }} />
             </div>
 
             <div className="relative border border-editorial-border bg-white p-6 shadow-xs overflow-hidden group hover:border-editorial-gold transition-colors duration-300">
@@ -84,7 +87,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <Target className="h-5 w-5" />
               </div>
               <h4 className="font-serif text-lg font-bold text-editorial-navy mb-2">Research Mission</h4>
-              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.mission }} />
+              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.mission.replace(/&nbsp;/g, ' ') }} />
             </div>
           </div>
         </div>
