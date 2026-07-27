@@ -129,7 +129,7 @@ export default function Footer({ setActiveTab, heroInfo = HERO_INFO }: FooterPro
             © {new Date().getFullYear()} Ing. Dr. Ibrahim Abdulai Sawaneh. All Rights Reserved.
           </span>
           <span className="text-center md:text-right text-[10px] uppercase tracking-wider leading-relaxed">
-            Designed for digital scientific archiving • Open-Access Research Policy • Freetown, Sierra Leone
+            Made with ❤️ by DreamDay Technology Limited
           </span>
         </div>
       </div>
