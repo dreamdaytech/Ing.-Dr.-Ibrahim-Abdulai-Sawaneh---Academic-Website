@@ -354,7 +354,7 @@ export default function ResearchSection({
           </div>
 
           <div class="keywords">
-            <span class="keywords-label">CLASSIFIED KEYWORDS:</span> ${pub.keywords.join(', ')}
+            <span class="keywords-label">CLASSIFIED KEYWORDS:</span> ${(pub.keywords || []).join(', ')}
           </div>
 
           <div class="excerpt-warning">
@@ -493,10 +493,10 @@ Status: Active index</div>
   // Filtering logic
   const filteredPubs = localPubs.filter((pub) => {
     const matchesSearch = 
-      pub.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pub.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      pub.keywords.some(k => k.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      pub.abstract.toLowerCase().includes(searchTerm.toLowerCase());
+      (pub.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (pub.authors || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (pub.keywords || []).some(k => (k || '').toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (pub.abstract || '').toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesCategory = selectedCategory === 'all' || pub.category === selectedCategory;
     const matchesYear = selectedYear === 'all' || pub.year.toString() === selectedYear;
@@ -547,7 +547,7 @@ Status: Active index</div>
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Research Publications & Papers
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           Filter, search, and export citations for Ing. Dr. Sawaneh’s peer-reviewed studies.
         </p>
       </div>
@@ -557,7 +557,7 @@ Status: Active index</div>
         {/* Filters Sidebar */}
         <div className="lg:col-span-1 space-y-6">
           <div className="border border-editorial-border bg-white p-5 shadow-xs">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy mb-4 uppercase tracking-wider flex items-center gap-2 border-b border-editorial-border-light pb-2.5">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy mb-4 flex items-center gap-2 border-b border-editorial-border-light pb-2.5">
               <Filter className="h-4 w-4 text-editorial-gold" />
               Repository Filters
             </h3>
@@ -614,7 +614,7 @@ Status: Active index</div>
 
           {/* Manual Import / Export JSON */}
           <div className="border border-editorial-border bg-white p-5 text-center shadow-xs">
-            <h4 className="font-serif text-sm font-semibold text-editorial-navy uppercase tracking-wide">Data Management</h4>
+            <h4 className="font-serif text-base font-semibold text-editorial-navy">Data Management</h4>
             <p className="text-[10px] text-slate-500 mt-2 leading-relaxed font-sans px-2">
               Manually export or import your research data as JSON. (Free & Most Reliable)
             </p>
@@ -637,7 +637,7 @@ Status: Active index</div>
 
           {/* Export Publications as PDF */}
           <div className="border border-editorial-border bg-white p-5 text-center shadow-xs">
-            <h4 className="font-serif text-sm font-semibold text-editorial-navy uppercase tracking-wide">Export Publications</h4>
+            <h4 className="font-serif text-base font-semibold text-editorial-navy">Export Publications</h4>
             <p className="text-[10px] text-slate-500 mt-2 leading-relaxed font-sans px-2">
               Download a formatted PDF dossier of all currently filtered research publications and proceedings.
             </p>
@@ -657,8 +657,8 @@ Status: Active index</div>
 
           {/* Academic Profile Export */}
           <div className="border border-editorial-border bg-editorial-navy p-5 text-white shadow-xs text-center">
-            <h4 className="font-serif text-sm font-semibold text-editorial-gold uppercase tracking-wide">Need the full CV file?</h4>
-            <p className="text-xs text-slate-300 mt-2 leading-relaxed font-sans">
+            <h4 className="font-serif text-base font-semibold text-editorial-gold">Need the full CV file?</h4>
+            <p className="text-base text-slate-300 mt-2 leading-relaxed font-sans">
               Dr. Sawaneh regularly updates his detailed professional dossier.
             </p>
             <button
@@ -740,27 +740,27 @@ Status: Active index</div>
                   </h3>
 
                   {/* Authors */}
-                  <p className="text-xs font-semibold text-slate-700 mt-2 flex items-center gap-1.5 font-sans">
+                  <p className="text-base font-semibold text-slate-700 mt-2 flex items-center gap-1.5 font-sans">
                     <Users className="h-3.5 w-3.5 text-slate-400" />
                     {pub.authors}
                   </p>
 
                   {/* Journal or Publisher */}
                   {pub.journal && (
-                    <p className="text-xs italic text-slate-500 mt-1 font-serif">
+                    <p className="text-base italic text-slate-500 mt-1 font-serif">
                       Published in: {pub.journal} {pub.publisher ? `— ${pub.publisher}` : ''}
                     </p>
                   )}
 
                   <div className="mt-4 bg-[#FBFBF9] p-4 border border-editorial-border-light">
                     <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400 block mb-1 font-bold">Abstract Summary</span>
-                    <div className="text-xs leading-relaxed text-slate-600 font-sans line-clamp-3 hover:line-clamp-none transition-all cursor-help prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: pub.abstract }} />
+                    <div className="text-base leading-relaxed text-slate-600 font-sans line-clamp-3 hover:line-clamp-none transition-all cursor-help prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: pub.abstract }} />
                   </div>
 
                   {/* Keywords Tag block */}
                   <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
                     <Hash className="h-3 w-3 text-slate-300" />
-                    {pub.keywords.map((keyword, idx) => (
+                    {(pub.keywords || []).map((keyword, idx) => (
                       <span key={idx} className="text-[9px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 uppercase tracking-wide">
                         {keyword}
                       </span>
@@ -841,7 +841,7 @@ Status: Active index</div>
             <div className="border border-dashed border-editorial-border p-12 text-center bg-white">
               <BookOpen className="mx-auto h-10 w-10 text-slate-300 mb-3" />
               <h3 className="font-serif text-base font-bold text-slate-800">No Publications Found</h3>
-              <p className="text-xs text-slate-500 mt-1 font-sans">
+              <p className="text-base text-slate-500 mt-1 font-sans">
                 Try clearing your active filters or modifying your search keywords.
               </p>
             </div>
@@ -862,7 +862,7 @@ Status: Active index</div>
               {/* APA Style block */}
               <div className="p-3.5 bg-[#FBFBF9] border border-editorial-border relative group">
                 <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-widest">APA Reference Standard</span>
-                <p className="text-xs text-slate-700 font-serif mt-1.5 pr-14 select-all leading-relaxed">
+                <p className="text-base text-slate-700 font-serif mt-1.5 pr-14 select-all leading-relaxed">
                   {getAPAStyle(activeCitationPub)}
                 </p>
                 <button
@@ -876,7 +876,7 @@ Status: Active index</div>
               {/* Harvard Style block */}
               <div className="p-3.5 bg-[#FBFBF9] border border-editorial-border relative group">
                 <span className="block text-[9px] font-mono text-slate-400 uppercase font-bold tracking-widest">Harvard Citation Style</span>
-                <p className="text-xs text-slate-700 font-serif mt-1.5 pr-14 select-all leading-relaxed">
+                <p className="text-base text-slate-700 font-serif mt-1.5 pr-14 select-all leading-relaxed">
                   {getHarvardStyle(activeCitationPub)}
                 </p>
                 <button
@@ -929,7 +929,7 @@ Status: Active index</div>
                   <Check className="h-6 w-6 animate-bounce" />
                 </div>
                 <h4 className="font-serif text-base font-bold text-slate-900">Request Dispatched</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto font-sans">
+                <p className="text-base text-slate-500 mt-1 max-w-xs mx-auto font-sans">
                   An automated academic copy link will be relayed to your address after administrative approval.
                 </p>
               </div>
@@ -1008,20 +1008,20 @@ Status: Active index</div>
                   {activePreviewPub.title}
                 </h3>
 
-                <p className="text-xs text-slate-600 font-semibold font-sans flex items-center gap-1.5">
+                <p className="text-base text-slate-600 font-semibold font-sans flex items-center gap-1.5">
                   <Users className="h-4 w-4 text-slate-400" />
                   {activePreviewPub.authors}
                 </p>
 
                 {activePreviewPub.journal && (
-                  <p className="text-xs text-slate-500 font-serif italic border-l-2 border-editorial-gold pl-3 py-0.5">
+                  <p className="text-base text-slate-500 font-serif italic border-l-2 border-editorial-gold pl-3 py-0.5">
                     Published: {activePreviewPub.journal} {activePreviewPub.publisher ? `— ${activePreviewPub.publisher}` : ''}
                   </p>
                 )}
 
                 <div className="pt-4 border-t border-editorial-border-light space-y-2.5">
                   <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">System Abstract</h4>
-                  <div className="text-xs leading-relaxed text-slate-600 font-sans text-justify prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: activePreviewPub.abstract }} />
+                  <div className="text-base leading-relaxed text-slate-600 font-sans text-justify prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: activePreviewPub.abstract }} />
                 </div>
 
                 {activePreviewPub.keywords && (

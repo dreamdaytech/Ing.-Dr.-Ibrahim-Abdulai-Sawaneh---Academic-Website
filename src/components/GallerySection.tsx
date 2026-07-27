@@ -74,7 +74,7 @@ export default function GallerySection({ galleryImages = DEFAULT_GALLERY, galler
               <p className="text-[10px] font-mono text-editorial-gold uppercase tracking-wider mb-2">
                 {image.category}
               </p>
-              <p className="text-sm font-sans text-slate-700 line-clamp-2">
+              <p className="text-base font-sans text-slate-700 line-clamp-2">
                 {image.caption}
               </p>
             </div>

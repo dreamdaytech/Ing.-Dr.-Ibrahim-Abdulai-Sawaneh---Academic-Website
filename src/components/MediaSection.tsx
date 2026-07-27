@@ -38,7 +38,7 @@ export default function MediaSection({ talkEvents = TALK_EVENTS }: MediaSectionP
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Conference Talks & Media
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           Keynotes, scientific presentations, panel discussions, and downloadable slide materials.
         </p>
       </div>
@@ -98,7 +98,7 @@ export default function MediaSection({ talkEvents = TALK_EVENTS }: MediaSectionP
                   Forum: {event.eventName} | Role: {event.role}
                 </p>
 
-                <div className="text-xs text-slate-600 leading-relaxed mt-3 font-sans bg-[#FBFBF9] p-3 border border-editorial-border-light prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: event.summary }} />
+                <div className="text-base text-slate-600 leading-relaxed mt-3 font-sans bg-[#FBFBF9] p-3 border border-editorial-border-light prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: event.summary }} />
 
                 <div className="mt-4 pt-3 border-t border-editorial-border-light flex items-center justify-between">
                   <button 
@@ -128,7 +128,7 @@ export default function MediaSection({ talkEvents = TALK_EVENTS }: MediaSectionP
         {/* Right Column: Audio/Video Player Placeholders */}
         <div className="lg:col-span-4 space-y-6">
           <div className="border border-editorial-border bg-white p-5 shadow-xs rounded-none">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy mb-4 uppercase tracking-widest border-b border-editorial-border-light pb-2.5 flex items-center gap-2">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy mb-4  border-b border-editorial-border-light pb-2.5 flex items-center gap-2">
               <PlayCircle className="h-4.5 w-4.5 text-editorial-gold" />
               Embedded Lecture Casts
             </h3>
@@ -161,8 +161,8 @@ export default function MediaSection({ talkEvents = TALK_EVENTS }: MediaSectionP
           {/* Invitation banner */}
           <div className="border border-editorial-border bg-editorial-navy p-6 text-white shadow-xs relative overflow-hidden rounded-none">
             <div className="absolute -right-12 -top-12 h-28 w-28 rounded-full bg-editorial-gold/10 blur-xl pointer-events-none"></div>
-            <h3 className="font-serif text-base font-bold text-editorial-gold uppercase tracking-wider">Invite Dr. Sawaneh</h3>
-            <p className="text-xs text-slate-300 leading-relaxed mt-2 font-sans">
+            <h3 className="font-serif text-base font-bold text-editorial-gold ">Invite Dr. Sawaneh</h3>
+            <p className="text-base text-slate-300 leading-relaxed mt-2 font-sans">
               Dr. Sawaneh delivers authoritative keynote lectures, peer review summaries, and policy advisory papers on cybersecurity and regional resilience models.
             </p>
             <button

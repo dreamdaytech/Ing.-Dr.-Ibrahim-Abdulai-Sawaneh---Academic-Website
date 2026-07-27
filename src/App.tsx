@@ -152,7 +152,7 @@ export default function App() {
               About {dynamicHeroInfo.titles && dynamicHeroInfo.titles.length > 1 ? dynamicHeroInfo.titles.slice(0, 2).join(' ') : 'Ing. Dr.'} {dynamicHeroInfo.name ? dynamicHeroInfo.name.split(' ').slice(0, 2).join(' ') : 'Ibrahim A.'} Sawaneh
             </h2>
             <div 
-              className="text-base text-slate-600 leading-relaxed font-sans text-justify prose prose-sm max-w-none prose-p:mb-4 line-clamp-6"
+              className="text-base text-slate-600 leading-relaxed font-sans text-justify prose prose-base max-w-none prose-p:mb-4 line-clamp-6"
               dangerouslySetInnerHTML={{ 
                 __html: (dynamicBiographyDetails.longForm ? dynamicBiographyDetails.longForm.join(' ') : BIOGRAPHY_DETAILS.longForm.join(' ')).replace(/&nbsp;/g, ' ') 
               }}
@@ -168,10 +168,10 @@ export default function App() {
 
           {/* Core specializations overview bento */}
           <div className="lg:col-span-5 bg-white border border-editorial-border p-6 shadow-xs space-y-4 rounded-none">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy border-b border-editorial-border-light pb-2.5 uppercase tracking-widest">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy border-b border-editorial-border-light pb-2.5">
               Core Technical Realms
             </h3>
-            <div className="space-y-4 text-xs text-slate-600 font-sans">
+            <div className="space-y-4 text-base text-slate-600 font-sans leading-relaxed">
               {[
                 { realm: "Sovereign Cybersecurity Systems", desc: "Modeling defensive networks, cybercrime profiling laws, and ECOWAS regional policy alignment." },
                 { realm: "Disaster Risk & Resilience Models", desc: "Bridging the gap between contingency guidelines and rural emergency response squads." },
@@ -220,7 +220,7 @@ export default function App() {
                   <div className={`h-48 w-32 bg-editorial-navy border border-editorial-gold p-3.5 flex flex-col justify-between text-white shrink-0 shadow-lg relative overflow-hidden rounded-none border-t-8`}>
                     <div className="absolute inset-0 bg-white/[0.02] bg-[size:10px_10px]"></div>
                     <span className="text-[6px] font-mono tracking-widest text-editorial-gold uppercase leading-none font-bold">Sawaneh Volume</span>
-                    <h4 className="font-serif text-[10px] font-bold tracking-tight leading-tight line-clamp-3 mt-1.5">
+                    <h4 className="font-serif text-sm font-bold tracking-tight leading-tight line-clamp-3 mt-1.5">
                       {dynamicBooks[0].title}
                     </h4>
                     <div className="mt-auto border-t border-white/10 pt-1.5 flex items-center justify-between text-[8px] font-mono">
@@ -234,7 +234,7 @@ export default function App() {
                     <h3 className="font-serif text-base font-bold text-white leading-snug mt-1 hover:text-editorial-gold transition-colors line-clamp-2">
                       {dynamicBooks[0].title}
                     </h3>
-                    <p className="text-xs text-slate-300 line-clamp-3 mt-2 leading-relaxed">
+                    <p className="text-base text-slate-300 line-clamp-3 mt-2 leading-relaxed">
                       {dynamicBooks[0].synopsis}
                     </p>
                     <span className="text-[10px] font-mono uppercase tracking-widest font-bold text-editorial-gold inline-flex items-center gap-1 mt-4">
@@ -243,7 +243,7 @@ export default function App() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-white/5 border border-white/15 p-6 rounded-none text-center text-slate-400 text-xs w-full py-16">
+                <div className="bg-white/5 border border-white/15 p-6 rounded-none text-center text-slate-400 text-sm w-full py-16">
                   No authored book volumes available.
                 </div>
               )}
@@ -263,7 +263,7 @@ export default function App() {
                   <p className="text-[10px] text-slate-300 font-mono uppercase tracking-wider">
                     Authors: {dynamicPubs[0].authors} | Year: {dynamicPubs[0].year} | Journal: {dynamicPubs[0].journal || "Academic Journal"}
                   </p>
-                  <p className="text-xs text-slate-300 leading-relaxed italic line-clamp-3 font-sans">
+                  <p className="text-base text-slate-300 leading-relaxed italic line-clamp-3 font-sans">
                     "{dynamicPubs[0].abstract}"
                   </p>
                   <div className="pt-4 border-t border-white/10 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest font-mono">
@@ -286,7 +286,7 @@ export default function App() {
                   </div>
                 </>
               ) : (
-                <p className="text-xs text-slate-400 italic">No publications indexed yet.</p>
+                <p className="text-base text-slate-400 italic">No publications indexed yet.</p>
               )}
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function App() {
             <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy">
               Appointments & Senate Mandates
             </h2>
-            <p className="text-sm text-slate-500 leading-relaxed font-sans">
+            <p className="text-base text-slate-500 leading-relaxed font-sans">
               Dr. Sawaneh maintains deep ties to academia and professional registries. Here is a brief look at his chronology:
             </p>
 
@@ -314,11 +314,11 @@ export default function App() {
                     <div className="absolute -left-[25px] top-1.5 h-2 w-2 bg-editorial-gold group-hover:bg-editorial-navy transition-colors rounded-none"></div>
                     <span className="block text-[10px] font-mono text-editorial-gold font-bold uppercase tracking-widest">{item.year}</span>
                     <h4 className="font-serif text-base font-bold text-editorial-navy group-hover:text-editorial-gold mt-0.5">{item.title}</h4>
-                    <p className="text-xs text-slate-500 font-sans">{item.subtitle} • {item.institution}</p>
+                    <p className="text-base text-slate-500 font-sans">{item.subtitle} • {item.institution}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-400 italic">No timeline achievements entered.</p>
+                <p className="text-base text-slate-400 italic">No timeline achievements entered.</p>
               )}
             </div>
 
@@ -340,7 +340,7 @@ export default function App() {
               <h3 className="font-serif text-lg font-bold text-editorial-navy leading-snug">
                 Fostering Localized ICT Competence
               </h3>
-              <p className="text-xs text-slate-600 italic leading-relaxed mt-3 font-sans">
+              <p className="text-base text-slate-600 italic leading-relaxed mt-3 font-sans">
                 "Our academic frameworks cannot rely purely on foreign templates. To prevent critical infrastructure vulnerabilities and secure our student databases, Sierra Leonean universities must train database engineers using localized, context-aware cybersecurity models."
               </p>
               <p className="text-[10px] font-mono uppercase tracking-widest font-bold text-slate-400 mt-4">
@@ -363,11 +363,11 @@ export default function App() {
 
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="space-y-3 max-w-xl">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-editorial-gold">Collaboration Gateway</span>
+              
               <h2 className="font-serif text-2xl sm:text-3xl font-extrabold tracking-tight">
                 Initiate Research Partnerships
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              <p className="text-base text-slate-300 leading-relaxed font-sans">
                 Dr. Sawaneh partners with universities, government boards (such as the NDMA), security organizations, and postgraduate candidates on digital transformation and cyber policy audits.
               </p>
             </div>

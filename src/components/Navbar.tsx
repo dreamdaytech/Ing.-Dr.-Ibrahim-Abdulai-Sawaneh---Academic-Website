@@ -74,22 +74,22 @@ export default function Navbar({
     const q = searchQuery.toLowerCase().trim();
     
     const matchedPubs = publications.filter(pub => 
-      pub.title.toLowerCase().includes(q) ||
-      pub.authors.toLowerCase().includes(q) ||
-      pub.abstract.toLowerCase().includes(q) ||
-      pub.keywords.some(k => k.toLowerCase().includes(q))
+      (pub.title || '').toLowerCase().includes(q) ||
+      (pub.authors || '').toLowerCase().includes(q) ||
+      (pub.abstract || '').toLowerCase().includes(q) ||
+      (pub.keywords || []).some(k => (k || '').toLowerCase().includes(q))
     ).slice(0, 5);
 
     const matchedBlogs = blogPosts.filter(post => 
-      post.title.toLowerCase().includes(q) ||
-      post.excerpt.toLowerCase().includes(q) ||
-      post.content.toLowerCase().includes(q)
+      (post.title || '').toLowerCase().includes(q) ||
+      (post.excerpt || '').toLowerCase().includes(q) ||
+      (post.content || '').toLowerCase().includes(q)
     ).slice(0, 5);
     
     const matchedBooks = books.filter(book => 
-      book.title.toLowerCase().includes(q) ||
-      book.synopsis.toLowerCase().includes(q) ||
-      book.publisher.toLowerCase().includes(q)
+      (book.title || '').toLowerCase().includes(q) ||
+      (book.synopsis || '').toLowerCase().includes(q) ||
+      (book.publisher || '').toLowerCase().includes(q)
     ).slice(0, 5);
 
     return { publications: matchedPubs, blogPosts: matchedBlogs, books: matchedBooks };
@@ -250,6 +250,7 @@ export default function Navbar({
                             <button
                               key={pub.id}
                               onClick={() => {
+                                setActiveTab('research');
                                 onSelectPublication?.(pub.id);
                                 setSearchQuery('');
                                 setIsSearchFocused(false);
@@ -281,6 +282,7 @@ export default function Navbar({
                             <button
                               key={book.id}
                               onClick={() => {
+                                setActiveTab('books');
                                 onSelectBook?.(book.id);
                                 setSearchQuery('');
                                 setIsSearchFocused(false);
@@ -312,6 +314,7 @@ export default function Navbar({
                             <button
                               key={post.id}
                               onClick={() => {
+                                setActiveTab('blog');
                                 onSelectBlogPost?.(post.id);
                                 setSearchQuery('');
                                 setIsSearchFocused(false);
@@ -401,6 +404,7 @@ export default function Navbar({
                             <button
                               key={pub.id}
                               onClick={() => {
+                                setActiveTab('research');
                                 onSelectPublication?.(pub.id);
                                 setSearchQuery('');
                                 setIsOpen(false);
@@ -427,6 +431,7 @@ export default function Navbar({
                             <button
                               key={book.id}
                               onClick={() => {
+                                setActiveTab('books');
                                 onSelectBook?.(book.id);
                                 setSearchQuery('');
                                 setIsOpen(false);
@@ -453,6 +458,7 @@ export default function Navbar({
                             <button
                               key={post.id}
                               onClick={() => {
+                                setActiveTab('blog');
                                 onSelectBlogPost?.(post.id);
                                 setSearchQuery('');
                                 setIsOpen(false);

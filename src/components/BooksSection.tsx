@@ -132,7 +132,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Authored Volumes & Book Showcase
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           Comprehensive studies published for institutions, security policymakers, and higher education libraries.
         </p>
       </div>
@@ -182,7 +182,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
                   {book.title}
                 </h3>
                 <p className="text-[10px] text-slate-400 font-mono mt-1">ISBN: {book.isbn}</p>
-                <div className="text-xs text-slate-600 line-clamp-3 mt-3 leading-relaxed font-sans prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: book.synopsis }} />
+                <div className="text-base text-slate-600 line-clamp-3 mt-3 leading-relaxed font-sans prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: book.synopsis }} />
               </div>
 
               <div className="mt-4 pt-4 border-t border-editorial-border-light flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-editorial-navy group-hover:text-editorial-gold transition-colors">
@@ -270,7 +270,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
                   {activeBookSelected.title}
                 </h3>
                 {activeBookSelected.subtitle && (
-                  <p className="text-sm text-slate-600 italic mt-1.5 leading-relaxed font-serif">
+                  <p className="text-base text-slate-600 italic mt-1.5 leading-relaxed font-serif">
                     {activeBookSelected.subtitle}
                   </p>
                 )}
@@ -292,7 +292,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
               <div className="space-y-4">
                 <div>
                   <h4 className="text-[10px] font-mono uppercase tracking-widest text-slate-400 font-bold">Synopsis Overview</h4>
-                  <div className="text-sm text-slate-600 leading-relaxed mt-1.5 font-sans prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: activeBookSelected.synopsis }} />
+                  <div className="text-base text-slate-600 leading-relaxed mt-1.5 font-sans prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: activeBookSelected.synopsis }} />
                 </div>
 
                 <div>
@@ -300,7 +300,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
                     <Sparkles className="h-3.5 w-3.5 text-editorial-gold" />
                     Why This Study Matters
                   </h4>
-                  <div className="text-sm text-slate-700 leading-relaxed mt-1.5 font-serif italic bg-[#FBFBF9] border-l-2 border-editorial-gold p-4 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: activeBookSelected.whyItMatters }} />
+                  <div className="text-base text-slate-700 leading-relaxed mt-1.5 font-serif italic bg-[#FBFBF9] border-l-2 border-editorial-gold p-4 prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: activeBookSelected.whyItMatters }} />
                 </div>
               </div>
 
@@ -327,7 +327,7 @@ export default function BooksSection({ books = BOOKS, initialSelectedBookId }: B
                   <div className="space-y-3.5 font-serif">
                     {activeBookSelected.reviews.map((review, idx) => (
                       <div key={idx} className="border-l border-editorial-border pl-4 py-1">
-                        <p className="text-xs italic text-slate-600 leading-relaxed">
+                        <p className="text-base italic text-slate-600 leading-relaxed">
                           "{review.text}"
                         </p>
                         <p className="text-[10px] font-bold text-slate-800 mt-1.5 font-mono uppercase tracking-widest">

@@ -41,11 +41,11 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Page Title Header */}
       <div className="mb-12 border-b border-editorial-border pb-6 text-center lg:text-left">
-        <span className="text-xs font-mono font-bold uppercase tracking-widest text-editorial-gold">Executive Profile</span>
+        
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Biography & Areas of Focus
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           An overview of academic journey, research mission, and core competencies.
         </p>
       </div>
@@ -61,7 +61,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
               {biographyDetails.introduction}
             </p>
             <div 
-              className="text-base leading-relaxed text-slate-600 mb-5 font-sans text-justify prose prose-sm sm:prose-base max-w-none prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold prose-p:mb-5"
+              className="text-base leading-relaxed text-slate-600 mb-5 font-sans text-justify prose prose-base max-w-none prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold prose-p:mb-5"
               dangerouslySetInnerHTML={{ __html: biographyDetails.longForm.join(' ').replace(/&nbsp;/g, ' ') }}
             />
           </section>
@@ -76,7 +76,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <Eye className="h-5 w-5" />
               </div>
               <h4 className="font-serif text-lg font-bold text-editorial-navy mb-2">Academic Vision</h4>
-              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.vision.replace(/&nbsp;/g, ' ') }} />
+              <div className="text-base leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-base max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.vision.replace(/&nbsp;/g, ' ') }} />
             </div>
 
             <div className="relative border border-editorial-border bg-white p-6 shadow-xs overflow-hidden group hover:border-editorial-gold transition-colors duration-300">
@@ -87,7 +87,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <Target className="h-5 w-5" />
               </div>
               <h4 className="font-serif text-lg font-bold text-editorial-navy mb-2">Research Mission</h4>
-              <div className="text-sm leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-sm max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.mission.replace(/&nbsp;/g, ' ') }} />
+              <div className="text-base leading-relaxed text-slate-600 relative z-10 font-sans text-justify prose prose-base max-w-none prose-p:my-1" dangerouslySetInnerHTML={{ __html: biographyDetails.mission.replace(/&nbsp;/g, ' ') }} />
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
           <div className="border border-editorial-border bg-editorial-navy p-6 text-white shadow-xs relative overflow-hidden">
             <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-editorial-gold/10 blur-xl pointer-events-none"></div>
             <h3 className="font-serif text-base font-bold text-editorial-gold mb-2 uppercase tracking-wide">Academic & Research Indexes</h3>
-            <p className="text-xs text-slate-300 leading-relaxed mb-5 font-sans">
+            <p className="text-base text-slate-300 leading-relaxed mb-5 font-sans">
               Explore authenticated publications, indices, citations, and scholarly profiles on international research repositories.
             </p>
             <div className="space-y-2 text-[11px] font-mono">
@@ -155,7 +155,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
           <h3 className="font-serif text-2xl font-bold text-editorial-navy">
             Core Research & System Interventions
           </h3>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-base text-slate-500">
             Clickable themes framing his papers, authored manuals, and ongoing national advisory programs.
           </p>
         </div>
@@ -177,7 +177,7 @@ export default function AboutSection({ biographyDetails = BIOGRAPHY_DETAILS, her
                 <h4 className="font-serif text-lg font-bold text-editorial-navy mb-2 leading-snug">
                   {area.title}
                 </h4>
-                <p className="text-xs leading-relaxed text-slate-600 mb-4 font-sans">
+                <p className="text-base leading-relaxed text-slate-600 mb-4 font-sans">
                   {area.description}
                 </p>
               </div>

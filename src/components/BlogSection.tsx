@@ -137,15 +137,15 @@ export default function BlogSection({
 
           {/* Abstract callout */}
           <div className="mt-6 border-l-2 border-editorial-gold bg-[#FBFBF9] p-4">
-            <p className="text-sm font-serif text-slate-700 leading-relaxed italic">
+            <p className="text-base font-serif text-slate-700 leading-relaxed italic">
               "{activePost.excerpt}"
             </p>
           </div>
 
           {/* Long Form Article Body */}
-          <div className="mt-8 text-sm sm:text-base leading-relaxed text-slate-700 space-y-6 border-t border-editorial-border-light pt-8 font-sans">
+          <div className="mt-8 text-base sm:text-base leading-relaxed text-slate-700 space-y-6 border-t border-editorial-border-light pt-8 font-sans">
             <div 
-              className="prose prose-sm sm:prose-base max-w-none text-slate-700 prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold hover:prose-a:text-editorial-gold/80 prose-strong:text-editorial-navy"
+              className="prose prose-base max-w-none text-slate-700 prose-headings:font-serif prose-headings:text-editorial-navy prose-a:text-editorial-gold hover:prose-a:text-editorial-gold/80 prose-strong:text-editorial-navy"
               dangerouslySetInnerHTML={{ __html: activePost.content }}
             />
           </div>
@@ -181,7 +181,7 @@ export default function BlogSection({
 
         {/* Related posts */}
         <section className="mt-12">
-          <h3 className="font-serif text-lg font-bold text-editorial-navy mb-4 border-b border-editorial-border-light pb-2 uppercase tracking-wider">
+          <h3 className="font-serif text-lg font-bold text-editorial-navy mb-4 border-b border-editorial-border-light pb-2 ">
             Related Thought Pieces
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -198,7 +198,7 @@ export default function BlogSection({
                 <h4 className="font-serif text-base font-bold text-editorial-navy leading-snug mt-1.5 hover:text-editorial-gold line-clamp-2">
                   {post.title}
                 </h4>
-                <p className="text-xs text-slate-500 line-clamp-2 mt-2 font-sans">
+                <p className="text-base text-slate-500 line-clamp-2 mt-2 font-sans">
                   {post.excerpt}
                 </p>
                 <div className="mt-4 pt-3 border-t border-editorial-border-light flex items-center justify-between text-[10px] text-slate-400 font-mono uppercase tracking-wider">
@@ -221,7 +221,7 @@ export default function BlogSection({
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Insights & Academic Commentary
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           Explorations in cybersecurity, higher education design, database engineering, and regional policy development.
         </p>
       </div>
@@ -264,7 +264,7 @@ export default function BlogSection({
                     {post.title}
                   </h3>
 
-                  <p className="text-xs leading-relaxed text-slate-600 mt-2.5 font-sans">
+                  <p className="text-base leading-relaxed text-slate-600 mt-2.5 font-sans">
                     {post.excerpt}
                   </p>
 
@@ -285,7 +285,7 @@ export default function BlogSection({
             <div className="border border-dashed border-editorial-border p-12 text-center bg-white">
               <BookOpen className="mx-auto h-10 w-10 text-slate-300 mb-3" />
               <h3 className="font-serif text-base font-bold text-slate-800">No Articles Found</h3>
-              <p className="text-xs text-slate-500 mt-1 font-sans">
+              <p className="text-base text-slate-500 mt-1 font-sans">
                 Try searching for keywords like 'database', 'cybercrime', or 'disaster'.
               </p>
             </div>
@@ -296,7 +296,7 @@ export default function BlogSection({
         <div className="lg:col-span-4 space-y-6">
           {/* Categories card */}
           <div className="border border-editorial-border bg-white p-5 shadow-xs rounded-none">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy mb-4 uppercase tracking-widest border-b border-editorial-border-light pb-2.5 flex items-center gap-2">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy mb-4  border-b border-editorial-border-light pb-2.5 flex items-center gap-2">
               <Compass className="h-4.5 w-4.5 text-editorial-gold" />
               Categories
             </h3>
@@ -321,8 +321,8 @@ export default function BlogSection({
           {/* Newsletter Subscribe card */}
           <div className="border border-editorial-border bg-editorial-navy p-6 text-white shadow-xs relative overflow-hidden rounded-none">
             <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-editorial-gold/10 blur-xl pointer-events-none"></div>
-            <h3 className="font-serif text-base font-bold text-editorial-gold uppercase tracking-wider">Insights Despatch</h3>
-            <p className="text-xs text-slate-300 mt-2 leading-relaxed font-sans">
+            <h3 className="font-serif text-base font-bold text-editorial-gold ">Insights Despatch</h3>
+            <p className="text-base text-slate-300 mt-2 leading-relaxed font-sans">
               Subscribe to receive automated notifications when Dr. Sawaneh publishes new books, research abstracts, or policy briefs.
             </p>
 

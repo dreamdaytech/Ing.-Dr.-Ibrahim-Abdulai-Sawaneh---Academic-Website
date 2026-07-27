@@ -50,13 +50,8 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
           className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12"
         >
           {/* Text Content */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
-            <motion.div 
-              variants={itemVariants} 
-              className="inline-block px-3 py-1 bg-slate-100 text-editorial-navy text-[10px] font-bold uppercase tracking-widest mb-6 w-fit font-mono"
-            >
-              Academic Profile & Research Repository
-            </motion.div>
+          <div className="lg:col-span-6 flex flex-col justify-center">
+            
 
             <motion.h1 
               variants={itemVariants}
@@ -73,14 +68,14 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
 
             <motion.p 
               variants={itemVariants}
-              className="mt-4 font-serif text-lg italic text-editorial-navy/85 max-w-xl border-l-2 border-editorial-gold pl-4 py-1"
+              className="mt-4 font-serif text-base italic text-editorial-navy/85 max-w-xl border-l-2 border-editorial-gold pl-4 py-1"
             >
               {heroInfo.tagline}
             </motion.p>
 
             <motion.p 
               variants={itemVariants}
-              className="mt-6 text-base leading-relaxed text-slate-600 sm:text-lg max-w-xl font-sans"
+              className="mt-6 text-base leading-relaxed text-slate-600 max-w-2xl font-sans"
             >
               {heroInfo.summary}
             </motion.p>
@@ -121,21 +116,21 @@ export default function Hero({ setActiveTab, heroInfo = HERO_INFO }: HeroProps) 
           </div>
 
           {/* Profile Badge in Editorial style */}
-          <div className="lg:col-span-5 flex justify-center">
+          <div className="lg:col-span-6 flex justify-center">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="relative w-full max-w-sm"
+              className="relative w-full max-w-xl"
             >
               <div className="border border-editorial-border bg-white p-6 shadow-xs">
                 {/* Profile Image */}
-                <div className="flex h-80 w-full items-center justify-center bg-slate-50 relative overflow-hidden border-r-4 border-editorial-gold">
+                <div className="flex h-96 sm:h-[36rem] w-full items-center justify-center bg-slate-50 relative overflow-hidden border-r-4 border-editorial-gold">
                   <img src={heroInfo?.heroUrl ? formatImgUrl(heroInfo.heroUrl) : heroImg} referrerPolicy="no-referrer" alt="Ing. Dr. Ibrahim Abdulai Sawaneh" className="w-full h-full object-cover" />
                 </div>
 
                 {/* Meta details */}
-                <div className="mt-6 space-y-4 text-xs text-slate-600 font-sans">
+                <div className="mt-6 space-y-4 text-sm text-slate-600 font-sans">
                   <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                     <div className="p-1.5 bg-slate-50 text-editorial-navy">
                       <Users className="h-4 w-4" />

@@ -1003,7 +1003,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
             </div>
           </div>
 
-          <p className="text-xs text-slate-500 text-center leading-relaxed mb-6 font-sans">
+          <p className="text-base text-slate-500 text-center leading-relaxed mb-6 font-sans">
             Please authenticate to manage publications, monographs, insights blog, CV timelines and media materials.
           </p>
 
@@ -1103,7 +1103,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
           <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
             Personal Scholarly Registry & CMS
           </h2>
-          <p className="mt-2 text-sm text-slate-500 font-mono">
+          <p className="mt-2 text-base text-slate-500 font-mono">
             Manage, edit, delete, and publish peer-reviewed studies, textbooks, timeline events, and blog insights.
           </p>
         </div>
@@ -1202,7 +1202,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
         <div className="lg:col-span-6 space-y-8">
           <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
             <div className="flex items-center justify-between border-b border-editorial-border-light pb-4 mb-4">
-              <h3 className="font-serif text-sm font-bold text-editorial-navy uppercase tracking-widest flex items-center gap-2">
+              <h3 className="font-serif text-lg font-bold text-editorial-navy  flex items-center gap-2">
                 <Database className="h-4 w-4 text-editorial-gold" />
                 {activeModel === 'profile' ? 'Academic Profile Modules' : 'Existing Registry Records'}
               </h3>
@@ -1323,7 +1323,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
             <>
               <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
               <div className="flex items-center justify-between border-b border-editorial-border-light pb-3 mb-4">
-                <h3 className="font-serif text-sm font-bold text-editorial-navy flex items-center gap-2">
+                <h3 className="font-serif text-lg font-bold text-editorial-navy flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-editorial-gold" />
                   Scholarly Discovery Hub
                 </h3>
@@ -1381,14 +1381,14 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
                 <div className="py-8 text-center space-y-3.5 border border-dashed border-slate-200 bg-slate-50/50">
                   <Loader2 className="h-6 w-6 animate-spin text-editorial-gold mx-auto" />
                   <div className="space-y-1">
-                    <p className="text-xs font-semibold text-editorial-navy animate-pulse">Scholarly Agent Active</p>
+                    <p className="text-base font-semibold text-editorial-navy animate-pulse">Scholarly Agent Active</p>
                     <p className="text-[10px] font-mono text-slate-400">{discoveryStatus}</p>
                   </div>
                 </div>
               )}
 
               {discoveryError && !isDiscovering && (
-                <div className="p-4 bg-amber-50/80 border border-amber-250 text-amber-900 text-xs font-sans leading-relaxed rounded-none">
+                <div className="p-4 bg-amber-50/80 border border-amber-250 text-amber-900 text-base font-sans leading-relaxed rounded-none">
                   {discoveryError}
                 </div>
               )}
@@ -1497,7 +1497,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
             {/* Manual Import / Export JSON */}
             <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none mt-6">
                 <div className="flex items-center justify-between border-b border-editorial-border-light pb-3 mb-4">
-                  <h3 className="font-serif text-sm font-bold text-editorial-navy flex items-center gap-2">
+                  <h3 className="font-serif text-lg font-bold text-editorial-navy flex items-center gap-2">
                     <Database className="h-4 w-4 text-editorial-gold" />
                     Data Management
                   </h3>
@@ -1527,7 +1527,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
         {/* Right Column: Interactive Form Engine (Tailored specifically per active model!) */}
         <div className="lg:col-span-6">
           <div id="cms-form-section" className="border border-editorial-border bg-white p-6 shadow-xs rounded-none sticky top-20">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy border-b border-editorial-border-light pb-3 mb-4 flex items-center justify-between gap-2">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy border-b border-editorial-border-light pb-3 mb-4 flex items-center justify-between gap-2">
               <span className="flex items-center gap-2">
                 <PlusCircle className="h-4 w-4 text-editorial-gold" />
                 {activeModel === 'profile' 
@@ -1553,7 +1553,7 @@ const [isSyncingDirect, setIsSyncingDirect] = useState(false);
                   <Check className="h-6 w-6 animate-bounce" />
                 </div>
                 <h4 className="font-serif text-base font-bold text-slate-900 font-bold">Database Updated Instantly!</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
+                <p className="text-base text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
                   The registry has been fully synchronized in client-state. These changes propagate in real time to the public academic views.
                 </p>
                 <button

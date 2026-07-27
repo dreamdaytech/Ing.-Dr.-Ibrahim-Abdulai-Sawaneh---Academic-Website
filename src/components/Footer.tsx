@@ -38,7 +38,7 @@ export default function Footer({ setActiveTab, heroInfo = HERO_INFO }: FooterPro
                 Ing. Dr. Ibrahim A. Sawaneh
               </span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed max-w-sm font-sans">
+            <p className="text-base text-slate-400 leading-relaxed max-w-sm font-sans">
               Official digital profile, research repository, and book showcase. Fostering technological advancements, cybersecurity sovereign controls, and disaster resilience policies in West Africa.
             </p>
             <div className="flex items-center gap-1.5 text-[9px] font-mono text-editorial-gold uppercase tracking-widest font-bold">

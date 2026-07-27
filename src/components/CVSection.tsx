@@ -55,7 +55,7 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInf
           <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
             Academic Dossier & Appointments
           </h2>
-          <p className="mt-2 text-sm text-slate-500 font-mono">
+          <p className="mt-2 text-base text-slate-500 font-mono">
             A chronological timeline of leadership, engineering research, and scholarly appointments.
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInf
       <div className="hidden print-only border-b-2 border-slate-900 pb-6 mb-8">
         <h1 className="font-serif text-3xl font-bold text-slate-900">{heroInfo.name}</h1>
         <p className="text-sm font-semibold text-slate-700 uppercase mt-1">{heroInfo.tagline}</p>
-        <p className="text-xs text-slate-500 mt-2 font-mono leading-relaxed">
+        <p className="text-base text-slate-500 mt-2 font-mono leading-relaxed">
           Email: {heroInfo.email} | Phone: {heroInfo.phone} | Affiliation: {heroInfo.address}
         </p>
       </div>
@@ -129,7 +129,7 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInf
                   </p>
 
                   {item.description && (
-                    <div className="text-xs leading-relaxed text-slate-600 mt-2.5 max-w-2xl bg-white p-4 border border-editorial-border group-hover:border-editorial-gold transition-all duration-300 font-sans prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: item.description }} />
+                    <div className="text-base leading-relaxed text-slate-600 mt-2.5 max-w-2xl bg-white p-4 border border-editorial-border group-hover:border-editorial-gold transition-all duration-300 font-sans prose prose-base max-w-none" dangerouslySetInnerHTML={{ __html: item.description }} />
                   )}
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInf
         <div className="lg:col-span-4 space-y-8">
           {/* Expertise matrices */}
           <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
-            <h3 className="font-serif text-sm font-bold text-editorial-navy mb-5 uppercase tracking-widest border-b border-editorial-border-light pb-2 flex items-center gap-2">
+            <h3 className="font-serif text-lg font-bold text-editorial-navy mb-5  border-b border-editorial-border-light pb-2 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-editorial-gold" />
               Technical Competence Matrix
             </h3>
@@ -166,7 +166,7 @@ export default function CVSection({ timelineItems = TIMELINE_EXPERIENCE, heroInf
           {/* Institutional registries block */}
           <div className="border border-editorial-border bg-[#FBFBF9] p-6 shadow-xs rounded-none">
             <h4 className="font-serif text-xs font-bold text-editorial-navy uppercase tracking-wider mb-2">Registered Registries</h4>
-            <p className="text-xs text-slate-500 leading-relaxed font-sans">
+            <p className="text-base text-slate-500 leading-relaxed font-sans">
               Dr. Sawaneh is fully registered and maintains affiliations with leading scientific groups.
             </p>
             <div className="mt-4 space-y-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-wide">

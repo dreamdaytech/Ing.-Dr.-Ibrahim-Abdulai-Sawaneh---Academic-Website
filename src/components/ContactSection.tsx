@@ -152,7 +152,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
         <h2 className="font-serif text-3xl font-extrabold tracking-tight text-editorial-navy sm:text-4xl mt-1">
           Academic Collaboration Gateway
         </h2>
-        <p className="mt-2 text-sm text-slate-500 font-mono">
+        <p className="mt-2 text-base text-slate-500 font-mono">
           Initiate partnerships, submit thesis research supervision files, or book advisory panels.
         </p>
       </div>
@@ -249,7 +249,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                       <CheckCircle2 className="h-6 w-6 animate-bounce" />
                     </div>
                     <h4 className="font-serif text-base font-bold text-slate-900">Inquiry Received</h4>
-                    <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                    <p className="text-base text-slate-500 mt-1 max-w-sm mx-auto">
                       Thank you for contacting Dr. Sawaneh. Your technical query has been logged and queued for evaluation.
                     </p>
                   </div>
@@ -313,7 +313,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                         onChange={(e) => setMsgSecurity(e.target.value)}
                         className="w-full p-2.5 border border-editorial-border rounded-none focus:outline-none focus:ring-1 focus:ring-editorial-navy bg-[#FBFBF9]"
                       />
-                      {msgSecurityError && <p className="text-red-500 text-xs mt-1">{msgSecurityError}</p>}
+                      {msgSecurityError && <p className="text-red-500 text-base mt-1">{msgSecurityError}</p>}
                     </div>
 
                     <button
@@ -338,7 +338,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                       <CheckCircle2 className="h-6 w-6 animate-bounce" />
                     </div>
                     <h4 className="font-serif text-base font-bold text-slate-900">Proposal Dispatched</h4>
-                    <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                    <p className="text-base text-slate-500 mt-1 max-w-sm mx-auto">
                       Your institutional partnership docket has been received. Our office will reach out shortly for coordinating steps.
                     </p>
                   </div>
@@ -405,7 +405,7 @@ export default function ContactSection({ heroInfo = HERO_INFO }: ContactSectionP
                         onChange={(e) => setCollabSecurity(e.target.value)}
                         className="w-full p-2.5 border border-editorial-border rounded-none focus:outline-none focus:ring-1 focus:ring-editorial-navy bg-[#FBFBF9]"
                       />
-                      {collabSecurityError && <p className="text-red-500 text-xs mt-1">{collabSecurityError}</p>}
+                      {collabSecurityError && <p className="text-red-500 text-base mt-1">{collabSecurityError}</p>}
                     </div>
 
                     <button
