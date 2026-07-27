@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import { Database, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Mail, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
+import { Database, Download, PlusCircle, CheckCircle2, ShieldAlert, Key, Layers, Layout, Edit, HardDrive, FileText, Check, Lock, User, Eye, EyeOff, LogOut, Trash2, BookOpen, Mail, Clock, Calendar, Award, Presentation, Briefcase, MapPin, ExternalLink, CloudLightning, RefreshCw, CheckCircle, Image as ImageIcon, Upload, Loader2, Search, Sparkles, Globe, X } from 'lucide-react';
 import { CMS_MODELS_INFO, PUBLICATIONS, BOOKS, BLOG_POSTS, TALK_EVENTS, TIMELINE_EXPERIENCE, HERO_INFO, BIOGRAPHY_DETAILS } from '../data/academicData';
 import { Publication, Book, BlogPost, TalkEvent, TimelineItem, GalleryImage, GalleryCategory, Message } from '../types';
 import { saveDocument, deleteDocument, seedDatabase, auth, uploadFile, fetchCollection } from '../lib/firebase';
@@ -214,6 +214,105 @@ export default function CMSDashboard({
   const [successMsg, setSuccessMsg] = useState(false);
 
   // Discovery Action Handlers
+  
+  const exportDataToJson = () => {
+    let dataToExport = [];
+    if (activeModel === 'publications') dataToExport = publications;
+    else if (activeModel === 'books') dataToExport = books;
+    else if (activeModel === 'blog-posts') dataToExport = blogPosts;
+    else if (activeModel === 'talk-events') dataToExport = talkEvents;
+    else return;
+
+    const dataStr = JSON.stringify(dataToExport, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${activeModel}_export.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const importDataFromJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const json = JSON.parse(event.target?.result as string);
+        if (Array.isArray(json)) {
+          if (activeModel === 'publications') {
+            const promises = json.map(item => saveDocument('publications', item.id || `pub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, item));
+            await Promise.all(promises);
+            const fetched = await fetchCollection('publications');
+            setPublications(fetched.length > 0 ? (fetched as any) : PUBLICATIONS);
+            alert(`Successfully imported ${json.length} publications!`);
+          } else {
+             alert(`Importing for ${activeModel} is not implemented fully, implement it similarly if needed`);
+          }
+        } else {
+          alert("Invalid data format. Expected an array.");
+        }
+      } catch (err) {
+        alert("Error parsing JSON file or saving to DB.");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+const [isSyncingDirect, setIsSyncingDirect] = useState(false);
+
+    const handleSyncGoogleScholar = async () => {
+    setIsSyncingDirect(true);
+    let attempts = 0;
+    const maxAttempts = 3;
+    let success = false;
+
+    while (attempts < maxAttempts && !success) {
+      attempts++;
+      try {
+        console.log(`Sync attempt ${attempts}...`);
+        const response = await fetch('/api/sync-scholar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: 'https://scholar.google.com/citations?view_op=list_works&hl=en&user=FFFjTA0AAAAJ&cstart=0&pagesize=100' })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success && data.publications) {
+          success = true;
+          const promises = data.publications.map((pub: any) => saveDocument('publications', pub.id || `pub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, pub));
+          await Promise.all(promises);
+          
+          const fetched = await fetchCollection('publications');
+          setPublications(fetched.length > 0 ? (fetched as any) : PUBLICATIONS);
+          
+          alert(`Successfully synced ${data.publications.length} publications directly to Firestore!`);
+        } else {
+          console.warn(`Attempt ${attempts} failed:`, data.error);
+          if (attempts >= maxAttempts) {
+            alert('Error syncing from Google Scholar after ' + maxAttempts + ' attempts: ' + (data.error || 'Unknown error'));
+          } else {
+            // Wait 2 seconds before retrying
+            await new Promise(res => setTimeout(res, 2000));
+          }
+        }
+      } catch (e) {
+        console.error('Network error on attempt ' + attempts + ':', e);
+        if (attempts >= maxAttempts) {
+          alert('Network error while syncing. Please try again later.');
+        } else {
+          await new Promise(res => setTimeout(res, 2000));
+        }
+      }
+    }
+    
+    setIsSyncingDirect(false);
+  };
+
   const handleDiscoverPublications = async () => {
     setIsDiscovering(true);
     setDiscoveryError(null);
@@ -1221,24 +1320,57 @@ export default function CMSDashboard({
 
           {/* Academic AI Discovery Hub for publications */}
           {activeModel === 'publications' && (
-            <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
+            <>
+              <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none">
               <div className="flex items-center justify-between border-b border-editorial-border-light pb-3 mb-4">
                 <h3 className="font-serif text-sm font-bold text-editorial-navy flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-editorial-gold" />
                   Scholarly Discovery Hub
                 </h3>
-                <button
-                  onClick={handleDiscoverPublications}
-                  disabled={isDiscovering}
-                  className="px-3 py-1.5 bg-editorial-gold hover:bg-editorial-gold/95 disabled:bg-slate-150 text-editorial-navy disabled:text-slate-450 font-mono text-[9px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 cursor-pointer rounded-none border border-editorial-gold/50"
-                >
-                  {isDiscovering ? (
-                    <RefreshCw className="h-3 w-3 animate-spin" />
-                  ) : (
-                    <Search className="h-3 w-3" />
-                  )}
-                  {isDiscovering ? 'Searching...' : 'Scan Google Scholar'}
-                </button>
+                
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSyncGoogleScholar}
+                    disabled={isSyncingDirect || isDiscovering}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 text-editorial-navy disabled:text-slate-400 font-mono text-[9px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 cursor-pointer rounded-none border border-slate-200"
+                  >
+                    {isSyncingDirect ? (
+                      <RefreshCw className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Globe className="h-3 w-3" />
+                    )}
+                    {isSyncingDirect ? 'Syncing...' : 'Direct Sync'}
+                  </button>
+                  
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleSyncGoogleScholar}
+                    disabled={isSyncingDirect || isDiscovering}
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 text-editorial-navy disabled:text-slate-400 font-mono text-[9px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 cursor-pointer rounded-none border border-slate-200"
+                  >
+                    {isSyncingDirect ? (
+                      <RefreshCw className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Globe className="h-3 w-3" />
+                    )}
+                    {isSyncingDirect ? 'Syncing...' : 'Direct Sync'}
+                  </button>
+                  <button
+                    onClick={handleDiscoverPublications}
+                    disabled={isDiscovering || isSyncingDirect}
+                    className="px-3 py-1.5 bg-editorial-gold hover:bg-editorial-gold/95 disabled:bg-slate-150 text-editorial-navy disabled:text-slate-450 font-mono text-[9px] uppercase tracking-wider font-bold transition-all flex items-center gap-1.5 cursor-pointer rounded-none border border-editorial-gold/50"
+                  >
+                    {isDiscovering ? (
+                      <RefreshCw className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Search className="h-3 w-3" />
+                    )}
+                    {isDiscovering ? 'Searching...' : 'Scan Google Scholar'}
+                  </button>
+                </div>
+
+                </div>
+
               </div>
 
               <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
@@ -1361,6 +1493,34 @@ export default function CMSDashboard({
                 </div>
               )}
             </div>
+
+            {/* Manual Import / Export JSON */}
+            <div className="border border-editorial-border bg-white p-6 shadow-xs rounded-none mt-6">
+                <div className="flex items-center justify-between border-b border-editorial-border-light pb-3 mb-4">
+                  <h3 className="font-serif text-sm font-bold text-editorial-navy flex items-center gap-2">
+                    <Database className="h-4 w-4 text-editorial-gold" />
+                    Data Management
+                  </h3>
+                </div>
+                <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
+                  Manually export or import your research data as JSON. (Free & Most Reliable)
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={exportDataToJson}
+                    className="w-full py-2 flex justify-center items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold transition-colors cursor-pointer border bg-slate-50 text-editorial-navy border-editorial-border hover:bg-slate-100"
+                  >
+                    <Download className="h-3 w-3" />
+                    Export
+                  </button>
+                  <label className="w-full py-2 flex justify-center items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold transition-colors cursor-pointer border bg-slate-50 text-editorial-navy border-editorial-border hover:bg-slate-100">
+                    <FileText className="h-3 w-3" />
+                    Import
+                    <input type="file" accept=".json" className="hidden" onChange={importDataFromJson} />
+                  </label>
+                </div>
+              </div>
+            </>
           )}
         </div>
 

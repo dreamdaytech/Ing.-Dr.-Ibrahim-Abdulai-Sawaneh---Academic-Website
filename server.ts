@@ -1,3 +1,5 @@
+import * as cheerio from 'cheerio';
+import https from 'https';
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
@@ -110,10 +112,16 @@ async function startServer() {
 
       res.json({ publications, sources });
     } catch (error: any) {
-      console.error("Error in discover-publications API:", error);
+      const errStr = typeof error === "object" ? (error.message || "") + String(error) : String(error);
+      const isQuotaError = errStr.includes("429") || errStr.includes("quota") || errStr.includes("RESOURCE_EXHAUSTED") || error?.status === 429;
+      if (isQuotaError) {
+        console.log("Gemini API rate limit exceeded in discover-publications, using fallback.");
+      } else {
+        console.error("Error in discover-publications API:", error);
+      }
       
       // Fallback to mock data if rate limited or quota exceeded
-      const isQuotaError = error?.status === 429 || error?.message?.includes("429") || error?.message?.includes("quota") || error?.message?.includes("RESOURCE_EXHAUSTED");
+
       if (isQuotaError) {
         console.log("Quota exceeded, returning mock publications data as fallback.");
         return res.json({
@@ -144,6 +152,85 @@ async function startServer() {
       }
 
       res.status(500).json({ error: error.message || "Failed to query academic databases" });
+    }
+  });
+
+  
+  app.post("/api/sync-scholar", async (req, res) => {
+    try {
+      const { url } = req.body;
+      if (!url || !url.includes('scholar.google')) {
+        return res.status(400).json({ error: "Invalid Google Scholar URL" });
+      }
+
+      const options = {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      };
+
+      https.get(url, options, (scholarRes) => {
+        let data = '';
+        scholarRes.on('data', (chunk) => data += chunk);
+        scholarRes.on('end', () => {
+          if (scholarRes.statusCode !== 200) {
+            return res.status(scholarRes.statusCode).json({ error: "Failed to fetch Google Scholar profile" });
+          }
+
+          const $ = cheerio.load(data);
+          const publications = [];
+          
+          $('.gsc_a_tr').each((i, el) => {
+            const title = $(el).find('.gsc_a_t a').text();
+            let link = $(el).find('.gsc_a_t a').attr('href') || '';
+            if (link && link.startsWith('/')) {
+              link = 'https://scholar.google.com' + link;
+            }
+            
+            const authors = $(el).find('.gsc_a_t .gs_gray').first().text();
+            const journalText = $(el).find('.gsc_a_t .gs_gray').last().text();
+            
+            // Extract year from journal text or the dedicated column
+            const yearText = $(el).find('.gsc_a_y .gsc_a_h').text();
+            const year = parseInt(yearText, 10) || new Date().getFullYear();
+            
+            const citationsText = $(el).find('.gsc_a_c a').text();
+            const citations = parseInt(citationsText, 10) || 0;
+            
+            // Try to figure out if it's a journal or conference
+            let category = 'journal-article';
+            if (journalText.toLowerCase().includes('conference') || journalText.toLowerCase().includes('proceedings')) {
+              category = 'conference-paper';
+            }
+
+            if (title) {
+              publications.push({
+                id: `scholar-${i}-${Date.now()}`,
+                title,
+                authors,
+                journal: journalText,
+                year,
+                category,
+                abstract: `Citations: ${citations}. ${journalText}`,
+                link
+              });
+            }
+          });
+          
+          if (publications.length === 0) {
+            console.log("No publications found. Possible Captcha or rate limit.", data);
+            return res.status(404).json({ error: "No publications found. The profile might be private, blocked by Google Captcha, or the URL is incorrect." });
+          }
+          res.json({ success: true, publications });
+        });
+      }).on('error', (e) => {
+        console.error("Error fetching scholar:", e);
+        res.status(500).json({ error: "Network error when fetching Scholar profile" });
+      });
+
+    } catch (error) {
+      console.error("Error in sync-scholar API:", error);
+      res.status(500).json({ error: "Failed to sync publications" });
     }
   });
 

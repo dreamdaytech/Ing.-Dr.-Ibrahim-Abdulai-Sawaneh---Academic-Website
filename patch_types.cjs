@@ -1,9 +1,14 @@
 const fs = require('fs');
-let c = fs.readFileSync('src/types.ts', 'utf8');
+let s = fs.readFileSync('src/components/CMSDashboard.tsx', 'utf8');
 
-c = c.replace(
-  "  date: string;\n}",
-  "  date: string;\n  status?: 'Pending' | 'In Progress' | 'Completed';\n}"
+s = s.replace(
+  "const promises = data.publications.map((pub) => saveDocument('publications', pub.id || `pub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, pub));",
+  "const promises = data.publications.map((pub: any) => saveDocument('publications', pub.id || `pub-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, pub));"
 );
 
-fs.writeFileSync('src/types.ts', c);
+s = s.replace(
+  "setPublications(fetched.length > 0 ? (fetched) : PUBLICATIONS);",
+  "setPublications(fetched.length > 0 ? (fetched as any) : PUBLICATIONS);"
+);
+
+fs.writeFileSync('src/components/CMSDashboard.tsx', s);
